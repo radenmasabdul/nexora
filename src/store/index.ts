@@ -1,10 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit"
-
-const dummyReducer = (state = {}) => state;
+import themeReducer from "@/features/theme/themeSlice"
 
 export const store = configureStore({
     reducer: {
-        dummy: dummyReducer,
+        theme: themeReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

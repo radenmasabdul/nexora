@@ -1,8 +1,12 @@
+import DarkModeToggle from "@/features/theme/DarkModeToggle"
+
+
 function App() {
 
   return (
     <>
-    <h1 className='text-red-500 text-8xl font-extrabold'>Hello World!</h1>
+    <DarkModeToggle />
+    <h1 className='text-black text-8xl font-extrabold dark:text-white'>Hello World!</h1>
     </>
   )
 }
