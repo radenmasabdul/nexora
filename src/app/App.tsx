@@ -1,12 +1,11 @@
-import DarkModeToggle from "@/app/theme/DarkModeToggle"
+import { useAuthHydration } from "@/features/auth/hooks/useAuthHydration"
+import AppRouter from "@/routes/AppRouter"
 
 function App() {
+  useAuthHydration ()
 
   return (
-    <>
-    <DarkModeToggle />
-    <h1 className='text-black text-8xl font-extrabold dark:text-white'>Hello World!</h1>
-    </>
+    <AppRouter />
   )
 }
 

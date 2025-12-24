@@ -1,4 +1,7 @@
 import axios from "axios"
+import { store } from "@/store"
+import { logout } from "@/features/auth/store/authSlice";
+import { tokenService } from "@/features/auth/services/token.service";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -12,7 +15,13 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    return config;
+    const token = tokenService.get()
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
   },
   (error) => Promise.reject(error)
 );
@@ -20,7 +29,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    return Promise.reject(error);
+    const status = error.response?.status
+
+    const isLoginRequest = error.config?.url?.includes('/auth/login');
+
+    if (status === 401 && !isLoginRequest) {
+      tokenService.remove();
+      store.dispatch(logout());
+      window.location.href = '/';
+    }
+
+    return Promise.reject(error)
   }
 );
 

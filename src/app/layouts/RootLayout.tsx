@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
+import GlobalAlert from "@/components/layout/GlobalAlert"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const theme = useSelector((state: RootState) => state.theme.mode)
@@ -19,5 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     }
   }, [theme])
 
-  return <div>{children}</div>
+  return (
+    <>
+      <GlobalAlert />
+      {children}
+    </>
+  );
 }
