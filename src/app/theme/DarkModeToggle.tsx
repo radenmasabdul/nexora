@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { setTheme } from "@/features/theme/themeSlice"
+import { setTheme } from "@/app/theme/themeSlice"
 import type { RootState } from "@/store"
 import { Moon, Sun } from "lucide-react"
 

@@ -1,5 +1,4 @@
-import DarkModeToggle from "@/features/theme/DarkModeToggle"
-
+import DarkModeToggle from "@/app/theme/DarkModeToggle"
 
 function App() {
 
