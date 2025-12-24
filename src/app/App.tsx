@@ -1,9 +1,11 @@
+import { useAuthHydration } from "@/features/auth/hooks/useAuthHydration"
+import AppRouter from "@/routes/AppRouter"
+
 function App() {
+  useAuthHydration ()
 
   return (
-    <>
-    <h1 className='text-red-500 text-8xl font-extrabold'>Hello World!</h1>
-    </>
+    <AppRouter />
   )
 }
 
