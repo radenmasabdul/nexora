@@ -1,7 +1,7 @@
 import { Outlet } from "react-router"
 import { SidebarResizeHandler } from "./SidebarResizeHandler"
 import { useSidebar } from "./hooks/useSidebar"
-import Navbar from "../Navbar"
+import Navbar from "../navbar/Navbar"
 import Backdrop from "./Backdrop"
 import AppSidebar from "./AppSidebar"
 

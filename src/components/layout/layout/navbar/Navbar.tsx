@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
-import { Menu, X, Search, MoreHorizontal } from "lucide-react";
-import { useSidebar } from "./sidebar/hooks/useSidebar";
+import { Menu, X, MoreHorizontal } from "lucide-react";
+import { useSidebar } from "../sidebar/hooks/useSidebar";
 import DarkModeToggle from "@/app/theme/DarkModeToggle";
+import NotificationDropdown from "./Notification";
+import UserDropdown from "./UserDropdown";
 
 export default function Navbar() {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -33,33 +34,10 @@ export default function Navbar() {
             <button
               onClick={handleToggle}
               aria-label="Toggle Sidebar"
-              className="flex items-center justify-center w-10 h-10 text-gray-500 border border-gray-200 rounded-lg dark:border-gray-800 dark:text-gray-400"
+              className="flex items-center justify-center w-10 h-10 text-gray-500 border border-gray-200 rounded-lg dark:border-gray-800 dark:text-gray-400 cursor-pointer"
             >
               {isMobileOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
-
-            <Link to="/" className="lg:hidden">
-              <img className="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
-              <img className="hidden dark:block" src="./images/logo/logo-dark.svg" alt="Logo" />
-            </Link>
-          </div>
-
-          <div className="hidden lg:block">
-            <div className="relative">
-              <Search
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Search or type command..."
-                className="h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-11 pr-16 text-sm text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 border px-2 py-1 rounded">
-                ⌘ K
-              </span>
-            </div>
           </div>
 
           <button
@@ -77,9 +55,9 @@ export default function Navbar() {
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             <DarkModeToggle />
-            {/* NotificationDropdown */}
+            <NotificationDropdown />
           </div>
-          {/* UserDropdown */}
+          <UserDropdown />
         </div>
       </div>
     </header>

@@ -72,15 +72,12 @@ export default function AppSidebar() {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link
-        to="/"
-        className={`flex items-center gap-3 px-4 py-4 ${isCollapsed ? "justify-center" : ""}`}
-      >
+      <span className={`flex items-center gap-3 px-4 py-4 ${isCollapsed ? "justify-center" : ""}`}>
         <img src={Logo} alt="Nexora Logo" className="w-9 h-9" />
         {!isCollapsed && (
           <span className="text-lg font-bold tracking-wide">Nexora</span>
         )}
-      </Link>
+      </span>
 
       <div className="p-4">
         <h2 className="mb-4 text-xs uppercase text-gray-400 flex items-center gap-2">

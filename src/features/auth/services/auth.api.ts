@@ -16,5 +16,11 @@ export const authApi = {
             user: res.data.data.user,
             token
         }
+    },
+    logout: async () => {
+        await axios.post("/auth/logout")
+        
+        tokenService.remove()
+        localStorage.removeItem('auth')
     }
 }
