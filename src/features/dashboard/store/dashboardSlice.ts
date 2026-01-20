@@ -5,6 +5,7 @@ import type { DashboardResponse } from "../schemas/dashboard.types"
 interface DashboardState extends DashboardResponse {
   loading: boolean;
   error: string | null;
+  lastUpdated: number | null;
 }
 
 const initialState: DashboardState = {
@@ -12,10 +13,16 @@ const initialState: DashboardState = {
   taskPriorities: [],
   taskWorkload: [],
   projectsProgress: [],
-  activity: [],
+  activity: {
+    day: [],
+    week: [],
+    month: [],
+    year: [],
+  },
   taskByTeam: [],
   loading: false,
   error: null,
+  lastUpdated: null,
 };
 
 export const fetchDashboard = createAsyncThunk< DashboardResponse, void, { rejectValue: string } >(
@@ -27,7 +34,10 @@ export const fetchDashboard = createAsyncThunk< DashboardResponse, void, { rejec
                 taskPriorities,
                 taskWorkload,
                 projectsProgress,
-                activity,
+                activityDay,
+                activityWeek,
+                activityMonth,
+                activityYear,
                 taskByTeam
             ] = await Promise.all([
                 dashboardApi.getTaskStatus(),
@@ -35,6 +45,9 @@ export const fetchDashboard = createAsyncThunk< DashboardResponse, void, { rejec
                 dashboardApi.getTaskWorkload(),
                 dashboardApi.getProjectsProgress(),
                 dashboardApi.getActivity("day"),
+                dashboardApi.getActivity("week"),
+                dashboardApi.getActivity("month"),
+                dashboardApi.getActivity("year"),
                 dashboardApi.getTaskByTeam()
             ]);
 
@@ -43,7 +56,12 @@ export const fetchDashboard = createAsyncThunk< DashboardResponse, void, { rejec
                 taskPriorities,
                 taskWorkload,
                 projectsProgress,
-                activity,
+                activity: {
+                    day: activityDay,
+                    week: activityWeek,
+                    month: activityMonth,
+                    year: activityYear,
+                },
                 taskByTeam
             };
         } catch (error: unknown) {
@@ -76,6 +94,7 @@ const dashboardSlice = createSlice({
                 state.projectsProgress = action.payload.projectsProgress;
                 state.activity = action.payload.activity;
                 state.taskByTeam = action.payload.taskByTeam;
+                state.lastUpdated = Date.now();
             })
             .addCase(fetchDashboard.rejected, (state, action) => {
                 state.loading = false;

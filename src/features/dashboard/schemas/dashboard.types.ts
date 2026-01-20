@@ -32,6 +32,13 @@ export interface ActivityLog {
 }
 export type ActivityLogResponse = ActivityLog[];
 
+export interface ActivityRange {
+    day: ActivityLogResponse;
+    week: ActivityLogResponse;
+    month: ActivityLogResponse;
+    year: ActivityLogResponse;
+}
+
 export interface TaskByTeam {
     team_id: string;
     team_name: string;
@@ -44,6 +51,6 @@ export interface DashboardResponse {
   taskPriorities: TaskPriorityResponse;
   taskWorkload: TaskWorkloadResponse;
   projectsProgress: ProjectProgressResponse;
-  activity: ActivityLogResponse;
+  activity: ActivityRange;
   taskByTeam: TaskByTeamResponse;
 }
