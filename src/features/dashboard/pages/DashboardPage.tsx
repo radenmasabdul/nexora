@@ -16,14 +16,14 @@ export default function DashboardPage() {
   } = useDashboard();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Project Dashboard</h1>
-            <p className="text-slate-600 mt-1">Overview of all your projects and tasks</p>
+            <h1 className="text-3xl font-bold text-primary">Project Dashboard</h1>
+            <p className="mt-1 text-secondary">Overview of all your projects and tasks</p>
           </div>
-          <div className="flex items-center gap-2 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-sm text-secondary">
             <Activity className="w-4 h-4" />
             <span>Last updated: {loading ? "Updating..." : lastUpdateTime}</span>
           </div>
@@ -41,6 +41,7 @@ export default function DashboardPage() {
                 description="Across all projects"
                 icon={Clock}
                 borderColor="border-l-blue-500"
+                textColor='text-secondary'
               />
 
               <CardOverview
@@ -49,6 +50,7 @@ export default function DashboardPage() {
                 description={`${completedTasks} Completed`}
                 icon={CheckCircle}
                 borderColor="border-l-green-500"
+                textColor='text-secondary'
               />
 
               <CardOverview
@@ -57,6 +59,7 @@ export default function DashboardPage() {
                 description={`${todayActivities} Today`}
                 icon={Activity}
                 borderColor="border-l-yellow-500"
+                textColor='text-secondary'
               />
 
               <CardOverview
@@ -65,6 +68,7 @@ export default function DashboardPage() {
                 description="With active tasks"
                 icon={Users}
                 borderColor="border-l-purple-500"
+                textColor='text-secondary'
               />
             </>
           )}

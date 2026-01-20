@@ -10,9 +10,9 @@ type CardOverviewProps = {
     textColor?: string;
 }
 
-export default function CardOverview({ title, value, description, icon: Icon, borderColor, textColor = "text-slate-600", }: CardOverviewProps) {
+export default function CardOverview({ title, value, description, icon: Icon, borderColor, textColor = "" }: CardOverviewProps) {
   return (
-    <Card className={`bg-white dark:bg-gray-800 border-l-4 ${borderColor}`}>
+    <Card className={`bg-surface border-l-4 ${borderColor}`}>
         <CardHeader className="pb-2">
             <CardDescription>{title}</CardDescription>
             <CardTitle className="text-3xl">{value}</CardTitle>
