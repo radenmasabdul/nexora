@@ -47,8 +47,11 @@ export default function AppSidebar() {
             <Link
               to={item.path!}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg
-                ${active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-100 dark:hover:bg-gray-800"}
-              `}
+                ${active
+                  ? "bg-brand-primary/10 text-brand-primary dark:bg-white/10 dark:text-white"
+                  : "hover:bg-surface-hover text-secondary dark:text-tertiary"
+                }`
+              }
             >
               {item.icon}
               {!isCollapsed && (
@@ -64,7 +67,7 @@ export default function AppSidebar() {
   return (
     <aside
       className={`
-        fixed top-0 left-0 z-50 h-screen border-r bg-white dark:bg-gray-900
+        fixed top-0 left-0 z-50 h-screen border-r bg-surface
         transition-all duration-300
         ${isMobile ? (isMobileOpen ? "translate-x-0" : "-translate-x-full") : "translate-x-0"}
         ${isExpanded || isHovered ? "w-72" : "w-20"}
@@ -75,12 +78,12 @@ export default function AppSidebar() {
       <span className={`flex items-center gap-3 px-4 py-4 ${isCollapsed ? "justify-center" : ""}`}>
         <img src={Logo} alt="Nexora Logo" className="w-9 h-9" />
         {!isCollapsed && (
-          <span className="text-lg font-bold tracking-wide">Nexora</span>
+          <span className="text-lg font-bold tracking-wide text-primary">Nexora</span>
         )}
       </span>
 
       <div className="p-4">
-        <h2 className="mb-4 text-xs uppercase text-gray-400 flex items-center gap-2">
+        <h2 className="mb-4 text-xs uppercase text-tertiary flex items-center gap-2">
           {!isCollapsed ? "Menu" : <MoreHorizontal />}
         </h2>
 

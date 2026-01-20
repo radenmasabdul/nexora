@@ -12,7 +12,7 @@ export default function AppLayout() {
     <>
       <SidebarResizeHandler />
 
-      <div className="min-h-screen flex bg-gray-50">
+      <div className="min-h-screen flex bg-background">
         <AppSidebar />
         <Backdrop />
 

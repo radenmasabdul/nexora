@@ -78,8 +78,7 @@ export default function UserDropdown() {
           variant="ghost"
           disabled={loading}
           className="cursor-pointer flex items-center gap-2 px-2
-          text-gray-700 dark:text-gray-400
-          hover:bg-transparent focus-visible:bg-transparent"
+            text-primary hover:bg-transparent focus-visible:bg-transparent"
         >
           <span className="font-medium text-sm">
             {user?.name ?? "User"}
@@ -96,23 +95,27 @@ export default function UserDropdown() {
       <DropdownMenuContent
         sideOffset={20}
         align="end"
-        className="w-64 rounded-xl"
+        className="w-64 rounded-xl bg-surface border border-default"
       >
         <div className="px-2 py-1">
-          <p className="text-sm font-medium">{user?.name ?? "User"}</p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm font-medium text-primary">{user?.name ?? "User"}</p>
+          <p className="text-xs text-tertiary">
             {user?.email ?? "user@example.com"}
           </p>
         </div>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem asChild>
-          <Link to="#">Edit profile</Link>
+        <DropdownMenuItem asChild className="hover:bg-surface-hover">
+          <Link to="#" className="text-primary">
+            Edit profile
+          </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link to="#">Account settings</Link>
+        <DropdownMenuItem asChild className="hover:bg-surface-hover">
+          <Link to="#" className="text-primary">
+            Account settings
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -120,7 +123,7 @@ export default function UserDropdown() {
         <DropdownMenuItem
           onClick={handleLogout}
           disabled={loading}
-          className="cursor-pointer"
+          className="cursor-pointer hover:bg-surface-hover text-primary"
         >
           {loading ? "Signing out..." : "Sign out"}
         </DropdownMenuItem>

@@ -41,13 +41,13 @@ export default function NotificationDropdown() {
         <button
           aria-label="Notifications"
           className="relative flex h-11 w-11 items-center justify-center rounded-full
-            border border-gray-200 bg-white text-gray-500
-            hover:bg-gray-100 hover:text-gray-700
-            dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 cursor-pointer"
+            border border-default bg-surface text-secondary
+            hover:bg-surface-hover hover:text-primary
+            cursor-pointer"
         >
           {notifying && (
-            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-orange-400">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75" />
+            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-warning">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-warning opacity-75" />
             </span>
           )}
           <Bell size={18} />
@@ -57,17 +57,17 @@ export default function NotificationDropdown() {
       <DropdownMenuContent
         align="end"
         sideOffset={12}
-        className="w-87.5 rounded-xl p-3"
+        className="w-87.5 rounded-xl p-3 bg-surface border border-default"
       >
-        <div className="mb-3 border-b pb-2">
-          <h5 className="text-sm font-semibold">Notification</h5>
+        <div className="mb-3 border-b border-default pb-2">
+          <h5 className="text-sm font-semibold text-primary">Notification</h5>
         </div>
 
         <div className="max-h-90 space-y-1 overflow-y-auto">
           {notifications.map((item) => (
             <DropdownMenuItem
               key={item.id}
-              className="flex gap-3 rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="flex gap-3 rounded-lg p-3 hover:bg-surface-hover"
             >
               <img
                 src={item.avatar}
@@ -76,11 +76,11 @@ export default function NotificationDropdown() {
               />
 
               <div className="flex flex-col text-sm">
-                <span className="text-gray-700 dark:text-gray-200">
+                <span className="text-primary">
                   <strong>{item.name}</strong> requests permission to change{" "}
                   <strong>{item.project}</strong>
                 </span>
-                <span className="text-xs text-gray-400">{item.time}</span>
+                <span className="text-xs text-tertiary">{item.time}</span>
               </div>
             </DropdownMenuItem>
           ))}
@@ -88,8 +88,8 @@ export default function NotificationDropdown() {
 
         <Link
           to="#"
-          className="mt-3 block rounded-lg border px-4 py-2 text-center text-sm font-medium
-            hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="mt-3 block rounded-lg border border-default px-4 py-2 text-center text-sm font-medium
+            hover:bg-surface-hover text-primary"
         >
           View All Notifications
         </Link>
