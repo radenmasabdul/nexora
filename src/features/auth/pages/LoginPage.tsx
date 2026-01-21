@@ -116,7 +116,7 @@ export default function LoginPage() {
               <div className="flex items-center justify-end">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                      <Button variant="link" className="text-slate-800 p-0 h-auto cursor-pointer">Forgot password?</Button>
+                      <span className="text-slate-800 text-sm p-0 h-auto cursor-pointer">Forgot password?</span>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Contact Administrator</p>

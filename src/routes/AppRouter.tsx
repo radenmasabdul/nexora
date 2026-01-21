@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import LoginPage from "@/pages/auth/LoginPage"
 import ProtectedRoute from "./ProtectedRoute"
+import AppLayout from "@/components/layout/layout/sidebar/AppLayout"
+import LoginPage from "@/pages/auth/LoginPage"
+import DashboardPage from "@/pages/dashboard/DashboardPage"
 
 export default function AppRouter() {
   return (
@@ -9,7 +11,9 @@ export default function AppRouter() {
         <Route path="/" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<div>Ini Dashboard</div>} />
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
         </Route>
         
         <Route path="*" element={<div>404 Not Found</div>} />
