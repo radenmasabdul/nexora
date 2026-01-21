@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import Logo from "@/assets/logo.png"
 
 import { useLoginForm } from '../hooks/useLoginForm';
@@ -114,16 +113,15 @@ export default function LoginPage() {
               </div>
 
               <div className="flex items-center justify-end">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                      <span className="text-slate-800 text-sm p-0 h-auto cursor-pointer">Forgot password?</span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Contact Administrator</p>
-                  </TooltipContent>
-                </Tooltip>
+                <div className="relative group inline-block">
+                  <span className="text-slate-800 text-sm cursor-pointer"> Forgot password? </span>
+                  
+                  <div className="absolute right-0 bottom-full mb-2 w-max max-w-xs rounded-md border border-slate-200 bg-white text-sm text-slate-800 p-2 shadow-md opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 pointer-events-none overflow-visible z-10">
+                    Contact Administrator
+                  </div>
+                </div>
               </div>
-              
+
               <Button
                 type='submit'
                 disabled={isLoading}
