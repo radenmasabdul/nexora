@@ -1,0 +1,181 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { usersApi } from "../services/users.api";
+import { z } from "zod";
+import { usersSchema } from "../schemas/users.schema";
+
+export type User = z.infer<typeof usersSchema> & { id: string };
+
+export type CreateUserPayload = z.infer<typeof usersSchema>;
+export type UpdateUserPayload = Partial<CreateUserPayload>;
+
+interface UsersState {
+  userList: User[];
+  selectedUser: User | null;
+
+  loadingFetch: boolean;
+  loadingMutation: boolean;
+
+  errorFetch: string | null;
+  errorMutation: string | null;
+}
+
+const initialState: UsersState = {
+  userList: [],
+  selectedUser: null,
+
+  loadingFetch: false,
+  loadingMutation: false,
+
+  errorFetch: null,
+  errorMutation: null,
+};
+
+export const fetchAllUsers = createAsyncThunk<User[], void, { rejectValue: string }>(
+    "users/fetchAllUsers", async (_, { rejectWithValue }) => {
+        try {
+            return await usersApi.getAllUsers();
+        } catch {
+            return rejectWithValue("Failed to fetch users");
+        }
+    }
+);
+
+export const fetchUserById = createAsyncThunk<User, string, { rejectValue: string }>(
+    "users/fetchUserById", async (id, { rejectWithValue }) => {
+        try {
+            return await usersApi.getUsersById(id);
+        } catch {
+            return rejectWithValue("Failed to fetch user");
+        }
+    }
+);
+
+export const createUser = createAsyncThunk<User, CreateUserPayload, { rejectValue: string }>(
+    "users/createUser", async (payload, { rejectWithValue }) => {
+        try {
+            return await usersApi.createUsers(payload);
+        } catch {
+            return rejectWithValue("Failed to create user");
+        }
+    }
+);
+
+export const updateUser = createAsyncThunk<User, { id: string; payload: UpdateUserPayload },{ rejectValue: string }>(
+    "users/updateUser", async ({ id, payload }, { rejectWithValue }) => {
+        try {
+            return await usersApi.updateUsers(id, payload);
+        } catch {
+            return rejectWithValue("Failed to update user");
+        }
+    }
+);
+
+export const deleteUser = createAsyncThunk<string, string, { rejectValue: string }>(
+    "users/deleteUser", async (id, { rejectWithValue }) => {
+        try {
+            await usersApi.deleteUsers(id);
+            return id;
+        } catch {
+            return rejectWithValue("Failed to delete user");
+        }
+    }
+);
+
+const usersSlice = createSlice({
+  name: "users",
+  initialState,
+  reducers: {
+    clearSelectedUser(state) {
+      state.selectedUser = null;
+    },
+    clearUsersError(state) {
+      state.errorFetch = null;
+      state.errorMutation = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllUsers.pending, (state) => {
+        state.loadingFetch = true;
+        state.errorFetch = null;
+      })
+      .addCase(fetchAllUsers.fulfilled, (state, action) => {
+        state.loadingFetch = false;
+        state.userList = action.payload;
+      })
+      .addCase(fetchAllUsers.rejected, (state, action) => {
+        state.loadingFetch = false;
+        state.errorFetch = action.payload ?? null;
+      });
+
+    builder
+      .addCase(fetchUserById.pending, (state) => {
+        state.loadingFetch = true;
+        state.errorFetch = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loadingFetch = false;
+        state.selectedUser = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loadingFetch = false;
+        state.errorFetch = action.payload ?? null;
+      });
+
+    builder
+      .addCase(createUser.pending, (state) => {
+        state.loadingMutation = true;
+        state.errorMutation = null;
+      })
+      .addCase(createUser.fulfilled, (state) => {
+        state.loadingMutation = false;
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.loadingMutation = false;
+        state.errorMutation = action.payload ?? null;
+      });
+
+    builder
+      .addCase(updateUser.pending, (state) => {
+        state.loadingMutation = true;
+        state.errorMutation = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loadingMutation = false;
+
+        const index = state.userList.findIndex(
+          (u) => u.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.userList[index] = action.payload;
+        }
+
+        if (state.selectedUser?.id === action.payload.id) {
+          state.selectedUser = action.payload;
+        }
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loadingMutation = false;
+        state.errorMutation = action.payload ?? null;
+      });
+
+    builder
+      .addCase(deleteUser.pending, (state) => {
+        state.loadingMutation = true;
+        state.errorMutation = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.loadingMutation = false;
+        state.userList = state.userList.filter(
+          (u) => u.id !== action.payload
+        );
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loadingMutation = false;
+        state.errorMutation = action.payload ?? null;
+      });
+  },
+});
+
+export const { clearSelectedUser, clearUsersError } = usersSlice.actions;
+export default usersSlice.reducer;

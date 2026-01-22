@@ -4,6 +4,7 @@ import authReducer from "@/features/auth/store/authSlice"
 import alertReducer from "@/app/state/alertSlice"
 import sidebarReducer from "@/components/layout/layout/sidebar/store/sidebarSlice"
 import dashboardReducer from "@/features/dashboard/store/dashboardSlice"
+import usersReducer from "@/features/users/store/usersSlice"
 
 export const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
         alert: alertReducer,
         sidebar: sidebarReducer,
         dashboard: dashboardReducer,
+        users: usersReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
