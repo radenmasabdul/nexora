@@ -17,6 +17,7 @@ export default function UsersPage() {
     totalData,
     handlePageChange,
     loadingFetch,
+    loadingRoleCounts,
     handleSearch,
     roleOptions,
     roleCounts
@@ -67,7 +68,7 @@ export default function UsersPage() {
         description="Manage users and access the NEXORA system"
       />
 
-      {loadingFetch ? (
+      {loadingRoleCounts ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <CardSkeletonRoles />
           <CardSkeletonRoles />

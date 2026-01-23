@@ -13,14 +13,13 @@ export const useUsers = () => {
   const {
     userList,
     selectedUser,
-
     currentPage,
     totalData,
     totalPages,
     roleCounts,
-
     loadingFetch,
     loadingMutation,
+    loadingRoleCounts,
     errorFetch,
     errorMutation,
   } = useSelector((state: RootState) => state.users);
@@ -63,16 +62,14 @@ export const useUsers = () => {
   return {
     userList,
     selectedUser,
-
     currentPage,
     totalData,
     totalPages,
-
     loadingFetch,
     loadingMutation,
+    loadingRoleCounts,
     errorFetch,
     errorMutation,
-
     tableData,
     handlePageChange,
     handleSearch,

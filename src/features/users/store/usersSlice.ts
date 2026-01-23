@@ -26,6 +26,7 @@ interface UsersState {
 
   loadingFetch: boolean;
   loadingMutation: boolean;
+  loadingRoleCounts: boolean;
 
   errorFetch: string | null;
   errorMutation: string | null;
@@ -47,6 +48,7 @@ const initialState: UsersState = {
 
   loadingFetch: false,
   loadingMutation: false,
+  loadingRoleCounts: false,
 
   errorFetch: null,
   errorMutation: null,
@@ -232,15 +234,15 @@ const usersSlice = createSlice({
 
     builder
       .addCase(fetchRoleCounts.pending, (state) => {
-        state.loadingFetch = true;
+        state.loadingRoleCounts = true;
         state.errorFetch = null;
       })
       .addCase(fetchRoleCounts.fulfilled, (state, action) => {
-        state.loadingFetch = false;
+        state.loadingRoleCounts = false;
         state.roleCounts = action.payload;
       })
       .addCase(fetchRoleCounts.rejected, (state, action) => {
-        state.loadingFetch = false;
+        state.loadingRoleCounts = false;
         state.errorFetch = action.payload ?? null;
       });
   },
