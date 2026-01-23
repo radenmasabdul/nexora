@@ -16,6 +16,7 @@ export default function UsersPage() {
     currentPage,
     totalData,
     handlePageChange,
+    loadingFetch
   } = useUsers();
 
   const handleSearch = (payload: { keyword: string; filter: string }) => {
@@ -120,6 +121,7 @@ export default function UsersPage() {
           limit={10}
           total={totalData}
           onPageChange={handlePageChange}
+          loading={loadingFetch}
         />
       </CardContent>
     </PageContainer>
