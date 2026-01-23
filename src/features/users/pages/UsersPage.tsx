@@ -8,6 +8,7 @@ import GlobalDataTable from "@/components/layout/GlobalDataTable";
 import { UserCircle2, Shield, Users, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useUsers } from "../hooks/useUsers";
+import { CardSkeletonRoles } from "../components/CardSkeletonUser";
 
 export default function UsersPage() {
   const {
@@ -66,31 +67,40 @@ export default function UsersPage() {
         description="Manage users and access the NEXORA system"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <CardRole
-          title="Admin"
-          value={roleCounts.admin}
-          icon={Shield}
-          iconBg="bg-purple-100"
-          iconColor="text-purple-600"
-        />
+      {loadingFetch ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <CardSkeletonRoles />
+          <CardSkeletonRoles />
+          <CardSkeletonRoles />
+        </div>
+        ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <CardRole
+            title="Admin"
+            value={roleCounts.admin}
+            icon={Shield}
+            iconBg="bg-purple-100"
+            iconColor="text-purple-600"
+          />
+          
+          <CardRole
+            title="Manager"
+            value={roleCounts.manager}
+            icon={Users}
+            iconBg="bg-blue-100"
+            iconColor="text-blue-600"
+          />
 
-        <CardRole
-          title="Manager"
-          value={roleCounts.manager}
-          icon={Users}
-          iconBg="bg-blue-100"
-          iconColor="text-blue-600"
-        />
-
-        <CardRole
-          title="Member"
-          value={roleCounts.member}
-          icon={UserCircle2}
-          iconBg="bg-green-100"
-          iconColor="text-green-600"
-        />
-      </div>
+          <CardRole
+            title="Member"
+            value={roleCounts.member}
+            icon={UserCircle2}
+            iconBg="bg-green-100"
+            iconColor="text-green-600"
+          />
+        </div>
+        )
+      }
 
       <CardContent>
         <div className="flex flex-wrap gap-2 items-center">
