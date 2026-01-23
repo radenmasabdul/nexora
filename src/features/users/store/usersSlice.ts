@@ -3,7 +3,15 @@ import { usersApi } from "../services/users.api";
 import { z } from "zod";
 import { usersSchema } from "../schemas/users.schema";
 
-export type User = z.infer<typeof usersSchema> & { id: string };
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "manager" | "member";
+  avatar_url?: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 export type CreateUserPayload = z.infer<typeof usersSchema>;
 export type UpdateUserPayload = Partial<CreateUserPayload>;
@@ -11,6 +19,10 @@ export type UpdateUserPayload = Partial<CreateUserPayload>;
 interface UsersState {
   userList: User[];
   selectedUser: User | null;
+
+  currentPage: number;
+  totalData: number;
+  totalPages: number;
 
   loadingFetch: boolean;
   loadingMutation: boolean;
@@ -23,6 +35,10 @@ const initialState: UsersState = {
   userList: [],
   selectedUser: null,
 
+  currentPage: 1,
+  totalData: 0,
+  totalPages: 0,
+
   loadingFetch: false,
   loadingMutation: false,
 
@@ -30,14 +46,25 @@ const initialState: UsersState = {
   errorMutation: null,
 };
 
-export const fetchAllUsers = createAsyncThunk<User[], void, { rejectValue: string }>(
-    "users/fetchAllUsers", async (_, { rejectWithValue }) => {
-        try {
-            return await usersApi.getAllUsers();
-        } catch {
-            return rejectWithValue("Failed to fetch users");
-        }
+export const fetchAllUsers = createAsyncThunk<
+{
+  data: User[];
+  currentPage: number;
+  totalData: number;
+  totalPages: number
+},
+{ page: number;
+  limit: number
+},
+{ rejectValue: string }
+>(
+  "users/fetchAllUsers", async ({ page, limit }, { rejectWithValue }) => {
+    try {
+      return await usersApi.getAllUsers(page, limit);
+    } catch {
+      return rejectWithValue("Failed to fetch users");
     }
+  }
 );
 
 export const fetchUserById = createAsyncThunk<User, string, { rejectValue: string }>(
@@ -101,7 +128,10 @@ const usersSlice = createSlice({
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.loadingFetch = false;
-        state.userList = action.payload;
+        state.userList = action.payload.data;
+        state.currentPage = action.payload.currentPage;
+        state.totalData = action.payload.totalData;
+        state.totalPages = action.payload.totalPages;
       })
       .addCase(fetchAllUsers.rejected, (state, action) => {
         state.loadingFetch = false;

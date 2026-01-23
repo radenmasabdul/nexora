@@ -10,9 +10,9 @@ export const usersApi = {
         const res = await axios.post("/users/create", payload)
         return res.data.data
     },
-    getAllUsers: async () => {
-        const res = await axios.get("/users/all")
-        return res.data.data
+    getAllUsers: async (page: number, limit: number) => {
+        const res = await axios.get("/users/all", { params: { page, limit }});
+        return res.data;
     },
     getUsersById: async (id: string) => {
         const res = await axios.get(`/users/${id}`)

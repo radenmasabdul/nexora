@@ -8,7 +8,16 @@ import GlobalDataTable from "@/components/layout/GlobalDataTable";
 import { UserCircle2, Shield, Users, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
+import { useUsers } from "../hooks/useUsers";
+
 export default function UsersPage() {
+  const {
+    tableData,
+    currentPage,
+    totalData,
+    handlePageChange,
+  } = useUsers();
+
   const handleSearch = (payload: { keyword: string; filter: string }) => {
     console.log("keyword:", payload.keyword);
     console.log("filter:", payload.filter);
@@ -19,15 +28,6 @@ export default function UsersPage() {
     { label: "Manager", value: "manager" },
     { label: "Member", value: "member" },
   ];
-
-  const users = [
-    { email: "admin@mail.com", role: "Admin", join: "2023-01-01" },
-    { email: "admin@mail.com", role: "Admin", join: "2023-01-01" },
-    { email: "admin@mail.com", role: "Admin", join: "2023-01-01" },
-    { email: "admin@mail.com", role: "Admin", join: "2023-01-01" },
-    { email: "admin@mail.com", role: "Admin", join: "2023-01-01" },
-    { email: "admin@mail.com", role: "Admin", join: "2023-01-01" },
-  ]
   
   const columns = [
     { key: "email", header: "Email", width: "35%" },
@@ -115,11 +115,11 @@ export default function UsersPage() {
 
         <GlobalDataTable
           columns={columns}
-          data={users}
-          page={1}
+          data={tableData}
+          page={currentPage}
           limit={10}
-          total={100}
-          onPageChange={(page) => console.log(page)}
+          total={totalData}
+          onPageChange={handlePageChange}
         />
       </CardContent>
     </PageContainer>
