@@ -7,7 +7,6 @@ import CardRole from "../components/CardRole";
 import GlobalDataTable from "@/components/layout/GlobalDataTable";
 import { UserCircle2, Shield, Users, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-
 import { useUsers } from "../hooks/useUsers";
 
 export default function UsersPage() {
@@ -16,19 +15,11 @@ export default function UsersPage() {
     currentPage,
     totalData,
     handlePageChange,
-    loadingFetch
+    loadingFetch,
+    handleSearch,
+    roleOptions,
+    roleCounts
   } = useUsers();
-
-  const handleSearch = (payload: { keyword: string; filter: string }) => {
-    console.log("keyword:", payload.keyword);
-    console.log("filter:", payload.filter);
-  };
-
-  const roleOptions = [
-    { label: "Admin", value: "admin" },
-    { label: "Manager", value: "manager" },
-    { label: "Member", value: "member" },
-  ];
   
   const columns = [
     { key: "email", header: "Email", width: "35%" },
@@ -78,7 +69,7 @@ export default function UsersPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <CardRole
           title="Admin"
-          value={3}
+          value={roleCounts.admin}
           icon={Shield}
           iconBg="bg-purple-100"
           iconColor="text-purple-600"
@@ -86,7 +77,7 @@ export default function UsersPage() {
 
         <CardRole
           title="Manager"
-          value={5}
+          value={roleCounts.manager}
           icon={Users}
           iconBg="bg-blue-100"
           iconColor="text-blue-600"
@@ -94,7 +85,7 @@ export default function UsersPage() {
 
         <CardRole
           title="Member"
-          value={10}
+          value={roleCounts.member}
           icon={UserCircle2}
           iconBg="bg-green-100"
           iconColor="text-green-600"

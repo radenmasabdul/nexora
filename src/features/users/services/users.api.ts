@@ -10,8 +10,8 @@ export const usersApi = {
         const res = await axios.post("/users/create", payload)
         return res.data.data
     },
-    getAllUsers: async (page: number, limit: number) => {
-        const res = await axios.get("/users/all", { params: { page, limit }});
+    getAllUsers: async (params: { page: number; limit: number; search?: string; role?: string }) => {
+        const res = await axios.get("/users/all", { params });
         return res.data;
     },
     getUsersById: async (id: string) => {
@@ -24,6 +24,10 @@ export const usersApi = {
     },
     deleteUsers: async (id: string) => {
         const res = await axios.delete(`/users/delete/${id}`)
+        return res.data.data
+    },
+    getRoleCounts: async () => {
+        const res = await axios.get(`/users/roles/counts`)
         return res.data.data
     }
 }

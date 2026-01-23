@@ -29,6 +29,12 @@ interface UsersState {
 
   errorFetch: string | null;
   errorMutation: string | null;
+
+  roleCounts: {
+    admin: number;
+    manager: number;
+    member: number;
+  };
 }
 
 const initialState: UsersState = {
@@ -44,6 +50,12 @@ const initialState: UsersState = {
 
   errorFetch: null,
   errorMutation: null,
+
+  roleCounts: {
+    admin: 0,
+    manager: 0,
+    member: 0,
+  }
 };
 
 export const fetchAllUsers = createAsyncThunk<
@@ -51,16 +63,14 @@ export const fetchAllUsers = createAsyncThunk<
   data: User[];
   currentPage: number;
   totalData: number;
-  totalPages: number
+  totalPages: number;
 },
-{ page: number;
-  limit: number
-},
+{ page: number; limit: number; search?: string; role?: string },
 { rejectValue: string }
 >(
-  "users/fetchAllUsers", async ({ page, limit }, { rejectWithValue }) => {
+  "users/fetchAllUsers", async ({ page, limit, search, role  }, { rejectWithValue }) => {
     try {
-      return await usersApi.getAllUsers(page, limit);
+      return await usersApi.getAllUsers({ page, limit, search, role });
     } catch {
       return rejectWithValue("Failed to fetch users");
     }
@@ -106,6 +116,21 @@ export const deleteUser = createAsyncThunk<string, string, { rejectValue: string
             return rejectWithValue("Failed to delete user");
         }
     }
+);
+
+export const fetchRoleCounts = createAsyncThunk<
+  { admin: number; manager: number; member: number },
+  void,
+  { rejectValue: string }
+>(
+  "users/fetchRoleCounts",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await usersApi.getRoleCounts();
+    } catch {
+      return rejectWithValue("Failed to fetch role counts");
+    }
+  }
 );
 
 const usersSlice = createSlice({
@@ -203,6 +228,20 @@ const usersSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loadingMutation = false;
         state.errorMutation = action.payload ?? null;
+      });
+
+    builder
+      .addCase(fetchRoleCounts.pending, (state) => {
+        state.loadingFetch = true;
+        state.errorFetch = null;
+      })
+      .addCase(fetchRoleCounts.fulfilled, (state, action) => {
+        state.loadingFetch = false;
+        state.roleCounts = action.payload;
+      })
+      .addCase(fetchRoleCounts.rejected, (state, action) => {
+        state.loadingFetch = false;
+        state.errorFetch = action.payload ?? null;
       });
   },
 });
