@@ -34,6 +34,8 @@ export default function GlobalToolbar({ options, placeholder, onSearch } : Globa
         placeholder={placeholder}
         value={filter}
         onChange={setFilter}
+        contentClassName="z-[9999]"
+        groupClassName="bg-surface"
       />
 
       <div className="flex">
