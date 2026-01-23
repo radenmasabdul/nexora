@@ -43,10 +43,10 @@ export default function GlobalModal({ name, className, title, description, cance
 
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button variant="outline">{cancelText}</Button>
+                    <Button variant="outline" className="bg-error text-white cursor-pointer">{cancelText}</Button>
                 </DialogClose>
                 <DialogClose asChild>
-                    <Button type="button" onClick={onSubmit}>{submitText}</Button>
+                    <Button type="button" onClick={onSubmit} className="bg-success text-white cursor-pointer">{submitText}</Button>
                 </DialogClose>
             </DialogFooter>
             </form>
