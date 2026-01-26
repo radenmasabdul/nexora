@@ -14,7 +14,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Loader2 } from "lucide-react";
+import { Loader2, FileX } from "lucide-react";
 
 type Column<T> = {
   key: keyof T | string
@@ -53,6 +53,20 @@ export default function GlobalDataTable<T>({ columns, data, page, total, limit, 
             <div className="py-10 text-center">
                 <div className="inline-flex items-center gap-2">
                     <Loader2 className="w-5 h-5 animate-spin" />
+                </div>
+            </div>
+            ) : data.length === 0 ? (
+            <div className="py-16 text-center">
+                <div className="inline-flex flex-col items-center gap-3">
+                    <div className="rounded-full bg-muted p-4">
+                        <FileX className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-1">
+                        <h3 className="font-semibold text-lg">Data Not Found</h3>
+                        <p className="text-sm text-muted-foreground">
+                            No data available to display at the moment
+                        </p>
+                    </div>
                 </div>
             </div>
             ) : (
