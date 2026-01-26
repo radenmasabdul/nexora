@@ -9,6 +9,7 @@ import { UserCircle2, Shield, Users, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useUsers } from "../hooks/useUsers";
 import { CardSkeletonRoles } from "../components/CardSkeletonUser";
+import GlobalConfirmModal from "@/components/layout/GlobalConfirmModal";
 
 export default function UsersPage() {
   const {
@@ -20,8 +21,23 @@ export default function UsersPage() {
     loadingRoleCounts,
     handleSearch,
     roleOptions,
-    roleCounts
+    roleCounts,
+    openConfirm,
+    setOpenConfirm,
+    openDeleteConfirm,
+    handleDeleteUser,
+    loadingMutation,
+    deleteId,
   } = useUsers();
+  
+  type TableRow = {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    join: string;
+    avatar: string | null | undefined;
+  };
   
   const columns = [
     { key: "email", header: "Email", width: "35%" },
@@ -31,7 +47,7 @@ export default function UsersPage() {
       key: "action",
       header: "Action",
       width: "25%",
-      render: () => (
+      render: (row: TableRow) => (
         <div className="flex justify-center gap-2">
           <Button
             size="icon"
@@ -53,6 +69,7 @@ export default function UsersPage() {
             size="icon"
             variant="ghost"
             className="text-red-600 hover:text-red-700 cursor-pointer"
+            onClick={() => openDeleteConfirm(row.id)}
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -125,6 +142,15 @@ export default function UsersPage() {
           onPageChange={handlePageChange}
           loading={loadingFetch}
         />
+
+        <GlobalConfirmModal
+        open={openConfirm}
+        title="Delete User"
+        description="Are you sure you want to delete this user?"
+        onCancel={() => setOpenConfirm(false)}
+        onConfirm={() => handleDeleteUser(deleteId!)}
+        loading={loadingMutation}
+      />
       </CardContent>
     </PageContainer>
   )

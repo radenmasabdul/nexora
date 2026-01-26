@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setAlert } from "@/app/state/alertSlice";
-import { fetchAllUsers, fetchRoleCounts, createUser } from "../store/usersSlice";
+import { fetchAllUsers, fetchRoleCounts, createUser, deleteUser } from "../store/usersSlice";
 import { usersSchema } from "../schemas/users.schema";
 import type { AppDispatch, RootState } from "@/store";
 import type { UsersSchema} from "../schemas/users.schema"
@@ -27,6 +27,8 @@ export const useUsers = () => {
   const [selectedFormRole, setSelectedFormRole] = useState<UserRole | "">("");
   const [showPassword, setShowPassword] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const {
     userList,
@@ -126,6 +128,39 @@ export const useUsers = () => {
     setShowPassword(false);
   };
 
+  const openDeleteConfirm = (id: string) => {
+    setDeleteId(id);
+    setOpenConfirm(true);
+  }
+
+  const handleDeleteUser = async (id: string) => {
+    if (!deleteId) return;
+
+    try {
+      await dispatch(deleteUser(id)).unwrap();
+
+      dispatch(setAlert({
+        message: "User delete successfully",
+        type: "success",
+      }));
+
+      dispatch(fetchAllUsers({
+        page: currentPage,
+        limit: 10,
+        search,
+        role,
+      }));
+
+      setOpenConfirm(false);
+      setDeleteId(null);
+    } catch (error) {
+      dispatch(setAlert({
+        message: error as string,
+        type: "error",
+      }));
+    }
+  }
+
   return {
     userList,
     selectedUser,
@@ -152,5 +187,10 @@ export const useUsers = () => {
     handleResetForm,
     openModal,
     setOpenModal,
+    openConfirm,
+    setOpenConfirm,
+    openDeleteConfirm,
+    handleDeleteUser,
+    deleteId,
   };
 };
