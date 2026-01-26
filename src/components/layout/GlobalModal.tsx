@@ -19,36 +19,61 @@ type GlobalModalProps = {
     cancelText?: string;
     submitText?: string;
     icon: LucideIcon;
+    open: boolean;
+    loading?: boolean;
     children: React.ReactNode;
     onSubmit: (e: React.FormEvent) => void;
+    onCancel?: () => void;
+    onOpenChange: (open: boolean) => void;
 }
 
-export default function GlobalModal({ name, className, title, description, cancelText = "Cancel", submitText = "Save", icon: Icon, children,  onSubmit } : GlobalModalProps) {
+export default function GlobalModal({ 
+  name, 
+  className, 
+  title, 
+  description, 
+  cancelText = "Cancel", 
+  submitText = "Save", 
+  icon: Icon,
+  open,
+  loading,
+  children,  
+  onSubmit, 
+  onCancel,
+  onOpenChange
+}: GlobalModalProps) {
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>
             <Button variant="outline" className="bg-blue-600 text-white px-4 py-5 rounded-lg cursor-pointer">
                 <Icon className="w-4 h-4 text-white" />
                 <span className="text-white">{name}</span>
             </Button>
         </DialogTrigger>
-        <DialogContent className={`${className} z-50`}>
+        <DialogContent className={`${className} z-50 [&>button]:hidden`}>
             <form onSubmit={onSubmit}>
-            <DialogHeader className="text-primary">
-                <DialogTitle>{title}</DialogTitle>
-                <DialogDescription>{description}</DialogDescription>
-            </DialogHeader>
-
-            <div>{children}</div>
-
-            <DialogFooter>
-                <DialogClose asChild>
-                    <Button variant="outline" className="bg-error text-white cursor-pointer">{cancelText}</Button>
-                </DialogClose>
-                <DialogClose asChild>
-                    <Button type="button" onClick={onSubmit} className="bg-success text-white cursor-pointer">{submitText}</Button>
-                </DialogClose>
-            </DialogFooter>
+              <DialogHeader className="text-primary">
+                  <DialogTitle>{title}</DialogTitle>
+                  <DialogDescription>{description}</DialogDescription>
+              </DialogHeader>
+              <div>{children}</div>
+              <DialogFooter>
+                  <DialogClose asChild>
+                      <Button type="button" variant="outline" className="bg-error text-white cursor-pointer" onClick={onCancel}>
+                        {cancelText}
+                      </Button>
+                  </DialogClose>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-success text-white font-semibold shadow-md transition-all cursor-pointer flex items-center justify-center min-w-30">
+                      {loading ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        submitText
+                      )}
+                  </Button>
+              </DialogFooter>
             </form>
         </DialogContent>
     </Dialog>
