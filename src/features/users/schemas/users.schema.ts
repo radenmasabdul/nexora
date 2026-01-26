@@ -10,7 +10,15 @@ export const usersSchema = z.object({
 
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
+    .min(6, { message: "Password must be at least 6 characters" })
+    .refine(
+      (value) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/.test(value),
+      {
+        message:
+          "Password must include uppercase, lowercase, number, and special character.",
+      }
+    ),
 
   role: z.enum(["admin", "manager", "member", ""], {
     message: "Invalid role"
