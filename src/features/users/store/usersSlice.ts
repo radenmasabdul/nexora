@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { usersApi } from "../services/users.api";
 import { z } from "zod";
 import { usersSchema } from "../schemas/users.schema";
+import { extractErrorMessage } from "@/lib/error.messages";
 
 export interface User {
   id: string;
@@ -58,13 +59,6 @@ const initialState: UsersState = {
     manager: 0,
     member: 0,
   }
-};
-
-const extractErrorMessage = (err: unknown, fallback: string) => {
-  return (
-    (err as { response?: { data?: { message?: string } } })
-      ?.response?.data?.message ?? fallback
-  );
 };
 
 export const fetchAllUsers = createAsyncThunk<
