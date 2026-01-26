@@ -60,6 +60,13 @@ const initialState: UsersState = {
   }
 };
 
+const extractErrorMessage = (err: unknown, fallback: string) => {
+  return (
+    (err as { response?: { data?: { message?: string } } })
+      ?.response?.data?.message ?? fallback
+  );
+};
+
 export const fetchAllUsers = createAsyncThunk<
 {
   data: User[];
@@ -73,8 +80,8 @@ export const fetchAllUsers = createAsyncThunk<
   "users/fetchAllUsers", async ({ page, limit, search, role  }, { rejectWithValue }) => {
     try {
       return await usersApi.getAllUsers({ page, limit, search, role });
-    } catch {
-      return rejectWithValue("Failed to fetch users");
+    } catch (err) {
+      return rejectWithValue(extractErrorMessage(err, "Failed to fetch user"));
     }
   }
 );
@@ -82,9 +89,9 @@ export const fetchAllUsers = createAsyncThunk<
 export const fetchUserById = createAsyncThunk<User, string, { rejectValue: string }>(
     "users/fetchUserById", async (id, { rejectWithValue }) => {
         try {
-            return await usersApi.getUsersById(id);
-        } catch {
-            return rejectWithValue("Failed to fetch user");
+          return await usersApi.getUsersById(id);
+        } catch (err) {
+          return rejectWithValue(extractErrorMessage(err, "Failed to fecth user"));
         }
     }
 );
@@ -92,9 +99,9 @@ export const fetchUserById = createAsyncThunk<User, string, { rejectValue: strin
 export const createUser = createAsyncThunk<User, CreateUserPayload, { rejectValue: string }>(
     "users/createUser", async (payload, { rejectWithValue }) => {
         try {
-            return await usersApi.createUsers(payload);
-        } catch {
-            return rejectWithValue("Failed to create user");
+          return await usersApi.createUsers(payload);
+        } catch (err) {
+          return rejectWithValue(extractErrorMessage(err, "Failed to create user"));
         }
     }
 );
@@ -102,9 +109,9 @@ export const createUser = createAsyncThunk<User, CreateUserPayload, { rejectValu
 export const updateUser = createAsyncThunk<User, { id: string; payload: UpdateUserPayload },{ rejectValue: string }>(
     "users/updateUser", async ({ id, payload }, { rejectWithValue }) => {
         try {
-            return await usersApi.updateUsers(id, payload);
-        } catch {
-            return rejectWithValue("Failed to update user");
+          return await usersApi.updateUsers(id, payload);
+        } catch (err: unknown) {
+          return rejectWithValue(extractErrorMessage(err, "Failed to update user"));
         }
     }
 );
@@ -112,10 +119,10 @@ export const updateUser = createAsyncThunk<User, { id: string; payload: UpdateUs
 export const deleteUser = createAsyncThunk<string, string, { rejectValue: string }>(
     "users/deleteUser", async (id, { rejectWithValue }) => {
         try {
-            await usersApi.deleteUsers(id);
-            return id;
-        } catch {
-            return rejectWithValue("Failed to delete user");
+          await usersApi.deleteUsers(id);
+          return id;
+        } catch (err: unknown) {
+          return rejectWithValue(extractErrorMessage(err, "Failed to delete user"));
         }
     }
 );
