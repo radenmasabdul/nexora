@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -6,25 +5,24 @@ import { Eye, EyeOff, Plus } from "lucide-react"
 import GlobalModal from "@/components/layout/GlobalModal"
 import GlobalSelect from "@/components/layout/GlobalSelect"
 
+import { useUsers } from "../hooks/useUsers"
+
 export default function UsersModal() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
-  
-  const togglePassword = () => setShowPassword(!showPassword);
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Saving data...");
-    console.log("Selected role:", selectedRole);
-  }
-  
-  const style = `w-full pr-4 py-2.5 text-primary border border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`
-  
-  const roleOptions = [
-    { label: "Admin", value: "admin" },
-    { label: "Manager", value: "manager" },
-    { label: "Member", value: "member" },
-  ];
+  const {
+    roleOptions,
+    selectedFormRole,
+    setSelectedFormRole,
+    showPassword,
+    togglePassword,
+    onSubmit,
+    saveNewForm,
+    handleResetForm,
+    openModal,
+    setOpenModal,
+    loadingMutation,
+  } = useUsers();
+
+  const style = `w-full pr-4 py-2.5 text-primary border border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`;
   
   return (
     <GlobalModal
@@ -33,17 +31,40 @@ export default function UsersModal() {
       title="Add New User"
       description="Please fill in the details below to create a new user."
       className="bg-surface"
-      onSubmit={handleSubmit}
+      onSubmit={saveNewForm.handleSubmit(onSubmit)}
+      onCancel={handleResetForm}
+      open={openModal}
+      onOpenChange={setOpenModal}
+      loading={loadingMutation}
     >
       <div className="space-y-5 py-5">
         <div className="space-y-3">
           <Label htmlFor="fullname">Full Name</Label>
-          <Input type="text" id="fullname" name="fullname" placeholder="Full Name" className={style} />
+          <Input
+            type="text"
+            id="fullname"
+            placeholder="Full Name"
+            className={style}
+            {...saveNewForm.register("name")}
+          />
+          {saveNewForm.formState.errors.name && (
+            <p className="text-red-500 text-sm">{saveNewForm.formState.errors.name.message}</p>
+          )}
         </div>
         
         <div className="space-y-3">
           <Label htmlFor="email">Email</Label>
-          <Input type="email" id="email" name="email" placeholder="you@example.com" autoComplete="email" className={style}/>
+          <Input
+            type="email" 
+            id="email" 
+            placeholder="you@example.com"
+            autoComplete="email"
+            className={style}
+            {...saveNewForm.register("email")}
+          />
+          {saveNewForm.formState.errors.email && (
+            <p className="text-red-500 text-sm">{saveNewForm.formState.errors.email.message}</p>
+          )}
         </div>
         
         <div className="space-y-3">
@@ -55,6 +76,7 @@ export default function UsersModal() {
               autoComplete="current-password"
               placeholder="••••••••"
               className={style}
+              {...saveNewForm.register("password")}
             />
             
             <Button
@@ -66,6 +88,9 @@ export default function UsersModal() {
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </Button>
           </div>
+          {saveNewForm.formState.errors.password && (
+            <p className="text-red-500 text-sm">{saveNewForm.formState.errors.password.message}</p>
+          )}
         </div>
         
         <div className="space-y-3">
@@ -73,11 +98,20 @@ export default function UsersModal() {
           <GlobalSelect
             options={roleOptions}
             placeholder="Select a role"
-            value={selectedRole}
-            onChange={setSelectedRole}
+            value={selectedFormRole}
             contentClassName="z-[9999]"
             groupClassName="bg-surface"
+            onChange={(value) => {
+              const roleValue = value as "" | "admin" | "manager" | "member";
+              setSelectedFormRole(roleValue);
+              if (roleValue) {
+                saveNewForm.setValue("role", roleValue);
+              }
+            }}
           />
+          {saveNewForm.formState.errors.role && (
+            <p className="text-red-500 text-sm">{saveNewForm.formState.errors.role.message}</p>
+          )}
         </div>
       </div>
     </GlobalModal>

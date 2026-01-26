@@ -12,9 +12,13 @@ export const usersSchema = z.object({
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
 
-  role: z.enum(["admin", "manager", "member"], {
+  role: z.enum(["admin", "manager", "member", ""], {
     message: "Invalid role"
+  }).refine((val) => val !== "", {
+    message: "Please select a role"
   }),
 
   avatar_url: z.string().nullable().optional()
 })
+
+export type UsersSchema = z.infer<typeof usersSchema>
