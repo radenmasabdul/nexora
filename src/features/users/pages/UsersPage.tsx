@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import PageContainer from "@/components/layout/PageContainer";
 import GlobalHeader from "@/components/layout/GlobalHeader";
 import CardContent from "@/components/layout/CardContent";
@@ -5,11 +6,10 @@ import GlobalToolbar from "@/components/layout/GlobalToolbar";
 import UsersModal from "../components/UsersModal";
 import CardRole from "../components/CardRole";
 import GlobalDataTable from "@/components/layout/GlobalDataTable";
-import { UserCircle2, Shield, Users, Eye, Pencil, Trash2 } from 'lucide-react';
+import { UserCircle2, Shield, Users, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useUsers } from "../hooks/useUsers";
 import { CardSkeletonRoles } from "../components/CardSkeletonUser";
-import GlobalConfirmModal from "@/components/layout/GlobalConfirmModal";
 
 export default function UsersPage() {
   const {
@@ -22,12 +22,6 @@ export default function UsersPage() {
     handleSearch,
     roleOptions,
     roleCounts,
-    openConfirm,
-    setOpenConfirm,
-    openDeleteConfirm,
-    handleDeleteUser,
-    loadingMutation,
-    deleteId,
   } = useUsers();
   
   type TableRow = {
@@ -49,30 +43,16 @@ export default function UsersPage() {
       width: "25%",
       render: (row: TableRow) => (
         <div className="flex justify-center gap-2">
-          <Button
-            size="icon"
-            variant="ghost"
-            className="text-blue-600 hover:text-blue-700 cursor-pointer"
+          <Link to={`/users/${row.id}`}>
+            <Button
+            size="sm"
+            variant="outline"
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
           >
-            <Eye className="w-4 h-4" />
+            <Send className="w-4 h-4" />
+            View
           </Button>
-
-          <Button
-            size="icon"
-            variant="ghost"
-            className="text-amber-600 hover:text-amber-700 cursor-pointer"
-          >
-            <Pencil className="w-4 h-4" />
-          </Button>
-
-          <Button
-            size="icon"
-            variant="ghost"
-            className="text-red-600 hover:text-red-700 cursor-pointer"
-            onClick={() => openDeleteConfirm(row.id)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          </Link>
         </div>
       ),
     }
@@ -142,15 +122,6 @@ export default function UsersPage() {
           onPageChange={handlePageChange}
           loading={loadingFetch}
         />
-
-        <GlobalConfirmModal
-        open={openConfirm}
-        title="Delete User"
-        description="Are you sure you want to delete this user?"
-        onCancel={() => setOpenConfirm(false)}
-        onConfirm={() => handleDeleteUser(deleteId!)}
-        loading={loadingMutation}
-      />
       </CardContent>
     </PageContainer>
   )

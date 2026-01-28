@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setAlert } from "@/app/state/alertSlice";
-import { fetchAllUsers, fetchRoleCounts, createUser, deleteUser } from "../store/usersSlice";
+import { fetchAllUsers, fetchUserById, fetchRoleCounts, createUser, deleteUser, clearSelectedUser } from "../store/usersSlice";
 import { usersSchema } from "../schemas/users.schema";
 import type { AppDispatch, RootState } from "@/store";
-import type { UsersSchema} from "../schemas/users.schema"
+import type { UsersSchema} from "../schemas/users.schema";
 import { format } from "date-fns";
 
 type UserRole = "admin" | "manager" | "member";
@@ -161,6 +161,41 @@ export const useUsers = () => {
     }
   }
 
+  const fetchUserDetail = useCallback((id: string) => {
+    dispatch(fetchUserById(id));
+  }, [dispatch]);
+
+  const clearUserDetail = useCallback(() => {
+    dispatch(clearSelectedUser());
+  }, [dispatch]);
+
+  const getInitials = (name: string): string => name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    
+    return new Intl.DateTimeFormat("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
+  
+  const getRoleBadgeColor = (role: string): string => {
+    switch (role.toLowerCase()) {
+      case "admin":
+        return "bg-red-100 text-red-800 hover:bg-red-200";
+      case "manager":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-200";
+      case "member":
+        return "bg-green-100 text-green-800 hover:bg-green-200";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return {
     userList,
     selectedUser,
@@ -192,5 +227,10 @@ export const useUsers = () => {
     openDeleteConfirm,
     handleDeleteUser,
     deleteId,
+    fetchUserDetail,
+    clearUserDetail,
+    getInitials,
+    formatDate,
+    getRoleBadgeColor,
   };
 };
