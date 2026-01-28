@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUsers } from "../../hooks/useUsers";
 import PageContainer from "@/components/layout/PageContainer";
+import GlobalConfirmModal from "@/components/layout/GlobalConfirmModal";
 
 export default function UsersDetail() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +23,11 @@ export default function UsersDetail() {
     getInitials,
     formatDate,
     getRoleBadgeColor,
+    openConfirm,
+    setOpenConfirm,
+    openDeleteConfirm,
+    handleDeleteUser,
+    loadingMutation,
   } = useUsers();
 
   useEffect(() => {
@@ -78,7 +84,9 @@ export default function UsersDetail() {
             Edit Profil
           </Button>
 
-          <Button className="bg-red-600 hover:bg-red-700 text-white cursor-pointer">
+          <Button className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+            onClick={() => openDeleteConfirm(user.id)}
+          >
             <Trash2 className="w-4 h-4 mr-2" />
             Delete Account
           </Button>
@@ -171,6 +179,18 @@ export default function UsersDetail() {
           </div>
         </CardContent>
       </Card>
+
+      <GlobalConfirmModal
+        open={openConfirm}
+        title="Delete Account"
+        description={`Are you sure you want to delete ${user.name}? This action cannot be undone.`}
+        loading={loadingMutation}
+        onCancel={() => setOpenConfirm(false)}
+        onConfirm={async () => {
+          await handleDeleteUser(user.id);
+        navigate("/users");
+        }}
+      />
     </PageContainer>
   )
 }
