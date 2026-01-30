@@ -30,6 +30,8 @@ interface NewUsers {
 
 export const useUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const hasInitialized = useRef(false);
+  const hasFetchedRoles = useRef(false);
 
   const [search, setSearch] = useState<string>("");
   const [role, setRole] = useState<string>("");
@@ -50,6 +52,7 @@ export const useUsers = () => {
     totalPages,
     roleCounts,
     loadingFetch,
+    loadingDetail,
     loadingMutation,
     loadingRoleCounts,
     errorFetch,
@@ -57,11 +60,27 @@ export const useUsers = () => {
   } = useSelector((state: RootState) => state.users);
 
   useEffect(() => {
-    dispatch(fetchAllUsers({ page: 1, limit: 10, search, role }));
+    if (!hasInitialized.current) {
+      dispatch(fetchAllUsers({ page: 1, limit: 10, search: "", role: "" }));
+      hasInitialized.current = true;
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!hasInitialized.current) return;
+
+    const timer = setTimeout(() => {
+      dispatch(fetchAllUsers({ page: 1, limit: 10, search, role }));
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [dispatch, search, role]);
 
   useEffect(() => {
-    dispatch(fetchRoleCounts());
+    if (!hasFetchedRoles.current) {
+      dispatch(fetchRoleCounts());
+      hasFetchedRoles.current = true;
+    }
   }, [dispatch]);
 
   const roleOptions = [
@@ -300,6 +319,7 @@ export const useUsers = () => {
     totalData,
     totalPages,
     loadingFetch,
+    loadingDetail,
     loadingMutation,
     loadingRoleCounts,
     errorFetch,
@@ -329,7 +349,6 @@ export const useUsers = () => {
     getInitials,
     formatDate,
     getRoleBadgeColor,
-
     isEditMode,
     setIsEditMode,
     updateUserForm,

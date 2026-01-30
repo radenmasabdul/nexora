@@ -20,7 +20,7 @@ export default function UsersDetail() {
 
   const {
     selectedUser: user,
-    loadingFetch: loading,
+    loadingDetail: loading,
     errorFetch: error,
     fetchUserDetail,
     clearUserDetail,

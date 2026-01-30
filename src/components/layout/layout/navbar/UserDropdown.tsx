@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { authApi } from "@/features/auth/services/auth.api";
 import { setAlert } from "@/app/state/alertSlice";
+import { clearAllCache } from "@/lib/requestCache"
 
 type AuthResponse = {
   token: string;
@@ -51,6 +52,8 @@ export default function UserDropdown() {
 
     try {
       await authApi.logout();
+
+      clearAllCache();
 
       dispatch(
         setAlert({
