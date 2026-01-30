@@ -3,6 +3,10 @@ import ProtectedRoute from "./ProtectedRoute"
 import AppLayout from "@/components/layout/layout/sidebar/AppLayout"
 import LoginPage from "@/pages/auth/LoginPage"
 import DashboardPage from "@/pages/dashboard/DashboardPage"
+import UsersPage from "@/pages/users/UsersPage"
+import UsersDetail from "@/features/users/pages/detail/UsersDetail"
+
+import NotFound from "@/pages/NotFound"
 
 export default function AppRouter() {
   return (
@@ -13,11 +17,13 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/users/:id" element={<UsersDetail />} />
           </Route>
         </Route>
         
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
-  )
+ )
 }

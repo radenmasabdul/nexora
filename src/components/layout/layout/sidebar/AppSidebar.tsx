@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  Users, 
-  FolderKanban, 
-  CheckSquare, 
+  Users,
+  ShieldHalf,
+  FolderKanban,
+  ListTodo,
   Activity,
+  Bell,
   MoreHorizontal,
+  ChevronDown,
 } from "lucide-react";
 import { useSidebar } from "./hooks/useSidebar";
 import Logo from "@/assets/logo.png";
@@ -17,12 +21,34 @@ type NavItem = {
   subItems?: { name: string; path: string }[];
 };
 
-const navItems: NavItem[] = [
-  { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
-  { name: "Team", icon: <Users size={20} />, path: "/teams" },
-  { name: "Projects", icon: <FolderKanban size={20} />, path: "/projects" },
-  { name: "Tasks", icon: <CheckSquare size={20} />, path: "/tasks"},
-  { name: "Activity", icon: <Activity size={20} />, path: "/activity"},
+type NavSection = {
+  title: string;
+  items: NavItem[];
+};
+
+const dashboardItem: NavItem = {
+  name: "Dashboard",
+  icon: <LayoutDashboard size={20} />,
+  path: "/dashboard"
+};
+
+const navSections: NavSection[] = [
+  {
+    title: "Management",
+    items: [
+      { name: "Users", icon: <Users size={20} />, path: "/users" },
+      { name: "Teams", icon: <ShieldHalf size={20} />, path: "/teams" },
+      { name: "Projects", icon: <FolderKanban size={20} />, path: "/projects" },
+      { name: "Tasks", icon: <ListTodo size={20} />, path: "/tasks" },
+    ]
+  },
+  {
+    title: "Monitoring",
+    items: [
+      { name: "Activity Logs", icon: <Activity size={20} />, path: "/activity" },
+      { name: "Notifications", icon: <Bell size={20} />, path: "/notifications" },
+    ]
+  }
 ];
 
 export default function AppSidebar() {
@@ -33,25 +59,34 @@ export default function AppSidebar() {
     isMobileOpen,
     setIsHovered,
   } = useSidebar();
-
   const location = useLocation();
   const isCollapsed = !isExpanded && !isHovered && !isMobileOpen;
 
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    Management: true,
+    Monitoring: true,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   const renderItems = (items: NavItem[]) => (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-1">
       {items.map((item) => {
         const active = location.pathname === item.path;
-
         return (
           <li key={item.name}>
             <Link
               to={item.path!}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors
                 ${active
                   ? "bg-brand-primary/10 text-brand-primary dark:bg-white/10 dark:text-white"
                   : "hover:bg-surface-hover text-secondary dark:text-tertiary"
-                }`
-              }
+                }`}
             >
               {item.icon}
               {!isCollapsed && (
@@ -82,12 +117,32 @@ export default function AppSidebar() {
         )}
       </span>
 
-      <div className="p-4">
-        <h2 className="mb-4 text-xs uppercase text-tertiary flex items-center gap-2">
-          {!isCollapsed ? "Menu" : <MoreHorizontal />}
-        </h2>
+      <div className="p-4 flex flex-col gap-6">
+        <div>
+          {renderItems([dashboardItem])}
+        </div>
 
-        {renderItems(navItems)}
+        {navSections.map((section) => (
+          <div key={section.title}>
+            {isCollapsed ? (
+              <div className="mb-3 flex justify-center">
+                <MoreHorizontal size={16} className="text-tertiary " />
+              </div>
+            ) : (
+              <button
+                onClick={() => toggleSection(section.title)}
+                className="mb-3 flex items-center justify-between w-full text-xs uppercase text-tertiary font-semibold tracking-wider hover:text-secondary transition-colors cursor-pointer"
+              >
+                <span>{section.title}</span>
+                <ChevronDown 
+                  size={16} 
+                  className={`transition-transform ${openSections[section.title] ? 'rotate-180' : ''}`} 
+                />
+              </button>
+            )}
+            {(isCollapsed || openSections[section.title]) && renderItems(section.items)}
+          </div>
+        ))}
       </div>
     </aside>
   );
