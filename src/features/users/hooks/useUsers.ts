@@ -1,12 +1,21 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setAlert } from "@/app/state/alertSlice";
-import { fetchAllUsers, fetchUserById, fetchRoleCounts, createUser, deleteUser, clearSelectedUser } from "../store/usersSlice";
-import { usersSchema } from "../schemas/users.schema";
+import {
+  fetchAllUsers,
+  fetchUserById,
+  fetchRoleCounts,
+  createUser,
+  updateUser,
+  deleteUser,
+  clearSelectedUser, 
+  type User
+} from "../store/usersSlice";
+import { usersSchema, usersUpdateSchema } from "../schemas/users.schema";
 import type { AppDispatch, RootState } from "@/store";
-import type { UsersSchema} from "../schemas/users.schema";
+import type { UsersSchema, UsersUpdateSchema} from "../schemas/users.schema";
 import { format } from "date-fns";
 
 type UserRole = "admin" | "manager" | "member";
@@ -22,13 +31,16 @@ interface NewUsers {
 export const useUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const [search, setSearch] = useState("");
-  const [role, setRole] = useState("");
+  const [search, setSearch] = useState<string>("");
+  const [role, setRole] = useState<string>("");
   const [selectedFormRole, setSelectedFormRole] = useState<UserRole | "">("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [openConfirm, setOpenConfirm] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
     userList,
@@ -196,6 +208,91 @@ export const useUsers = () => {
     }
   };
 
+  const updateUserInitial = useCallback((user: User): UsersUpdateSchema => ({
+    name: user.name,
+    email: user.email,
+    password: "",
+    role: user.role,
+    avatar_url: user.avatar_url || "",
+  }), []);
+
+  const updateUserForm = useForm<UsersUpdateSchema>({
+    resolver: zodResolver(usersUpdateSchema),
+  });
+
+  const onSubmitUpdate = useCallback(async (id: string, formData: FormData) => {
+    try {
+      await dispatch(updateUser({ id, payload: formData })).unwrap();
+
+      dispatch(setAlert({
+        message: "User updated successfully",
+        type: "success",
+      }));
+
+      setIsEditMode(false);
+      dispatch(fetchUserById(id));
+    } catch (error) {
+      dispatch(setAlert({
+        message: error as string,
+        type: "error",
+      }));
+    }
+  }, [dispatch]);
+
+  const handleEditClick = useCallback((user: User) => {
+    updateUserForm.reset({
+      name: user.name,
+      email: user.email,
+      password: "",
+      role: user.role,
+      avatar_url: user.avatar_url || "",
+    });
+    setIsEditMode(true);
+  }, [updateUserForm]);
+
+  const handleCancelEdit = useCallback(() => {
+    setIsEditMode(false);
+    setPreviewAvatar(null);
+    updateUserForm.reset();
+  }, [updateUserForm]);
+
+  const handleOpenCamera = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleAvatarChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setPreviewAvatar(previewUrl);
+
+    updateUserForm.setValue("avatar_url", file);
+  }, [updateUserForm]);
+
+  const handleSubmitUpdate = useCallback((id: string) => {
+    return updateUserForm.handleSubmit((data: UsersUpdateSchema) => {
+      if (!data) return;
+
+      const formData = new FormData();
+
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("role", data.role);
+
+      if (data.password) {
+        formData.append("password", data.password);
+      }
+
+      if (data.avatar_url instanceof File) {
+        formData.append("avatar", data.avatar_url); 
+      }
+
+      onSubmitUpdate(id, formData);
+      setPreviewAvatar(null);
+    });
+  }, [updateUserForm, onSubmitUpdate]);
+
   return {
     userList,
     selectedUser,
@@ -232,5 +329,19 @@ export const useUsers = () => {
     getInitials,
     formatDate,
     getRoleBadgeColor,
+
+    isEditMode,
+    setIsEditMode,
+    updateUserForm,
+    onSubmitUpdate,
+    updateUserInitial,
+    previewAvatar,
+    setPreviewAvatar,
+    fileInputRef,
+    handleEditClick,
+    handleCancelEdit,
+    handleOpenCamera,
+    handleAvatarChange,
+    handleSubmitUpdate,
   };
 };

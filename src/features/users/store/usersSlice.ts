@@ -100,7 +100,7 @@ export const createUser = createAsyncThunk<User, CreateUserPayload, { rejectValu
     }
 );
 
-export const updateUser = createAsyncThunk<User, { id: string; payload: UpdateUserPayload },{ rejectValue: string }>(
+export const updateUser = createAsyncThunk<User, { id: string; payload: FormData },{ rejectValue: string }>(
     "users/updateUser", async ({ id, payload }, { rejectWithValue }) => {
         try {
           return await usersApi.updateUsers(id, payload);

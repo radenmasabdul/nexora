@@ -3,7 +3,6 @@ import type { usersSchema } from "../schemas/users.schema"
 import { z } from "zod"
 
 type CreateUserPayload = z.infer<typeof usersSchema>
-type UpdateUserPayload = Partial<CreateUserPayload>
 
 export const usersApi = {
     createUsers: async (payload : CreateUserPayload) => {
@@ -18,8 +17,10 @@ export const usersApi = {
         const res = await axios.get(`/users/${id}`)
         return res.data.data
     },
-    updateUsers: async (id: string, payload : UpdateUserPayload) => {
-        const res = await axios.put(`/users/update/${id}`, payload)
+    updateUsers: async (id: string, payload : FormData) => {
+        const res = await axios.put(`/users/update/${id}`, payload, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
         return res.data.data
     },
     deleteUsers: async (id: string) => {
