@@ -59,14 +59,14 @@ export default function GlobalModal({
               <div>{children}</div>
               <DialogFooter>
                   <DialogClose asChild>
-                      <Button type="button" variant="outline" className="bg-error text-white cursor-pointer" onClick={onCancel}>
+                      <Button type="button" variant="outline" className="bg-red-600 hover:bg-red-700 text-white cursor-pointer" onClick={onCancel}>
                         {cancelText}
                       </Button>
                   </DialogClose>
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="bg-success text-white font-semibold shadow-md transition-all cursor-pointer flex items-center justify-center min-w-30">
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-md transition-all cursor-pointer flex items-center justify-center min-w-30">
                       {loading ? (
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                       ) : (
