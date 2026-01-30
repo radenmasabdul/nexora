@@ -6,6 +6,8 @@ import DashboardPage from "@/pages/dashboard/DashboardPage"
 import UsersPage from "@/pages/users/UsersPage"
 import UsersDetail from "@/features/users/pages/detail/UsersDetail"
 
+import NotFound from "@/pages/NotFound"
+
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -20,8 +22,8 @@ export default function AppRouter() {
           </Route>
         </Route>
         
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
-  )
+ )
 }
