@@ -1,15 +1,53 @@
 import axios from "@/lib/axios";
-
-const get = async (url: string) => {
-  const res = await axios.get(url);
-  return res.data.data;
-};
+import { createCacheKey, cachedRequest } from "@/lib/requestCache";
 
 export const dashboardApi = {
-  getTaskStatus: () => get("/dashboard/tasks/status"),
-  getTaskPriorities: () => get("/dashboard/tasks/priority"),
-  getTaskWorkload: () => get("/dashboard/tasks/workload"),
-  getProjectsProgress: () => get("/dashboard/projects/progress"),
-  getActivity: (range: "day" | "week" | "month" | "year" = "day") => get(`/dashboard/activities/counts?range=${range}`),
-  getTaskByTeam: () => get("/dashboard/teams/teams"),
+  getTaskStatus: async () => {
+    const cacheKey = createCacheKey("/dashboard/tasks/status");
+    
+    return cachedRequest(cacheKey, async () => {
+      const res = await axios.get("/dashboard/tasks/status");
+      return res.data.data;
+    });
+  },
+  getTaskPriorities: async () => {
+    const cacheKey = createCacheKey("/dashboard/tasks/priority");
+    
+    return cachedRequest(cacheKey, async () => {
+      const res = await axios.get("/dashboard/tasks/priority");
+      return res.data.data;
+    });
+  },
+  getTaskWorkload: async () => {
+    const cacheKey = createCacheKey("/dashboard/tasks/workload");
+    
+    return cachedRequest(cacheKey, async () => {
+      const res = await axios.get("/dashboard/tasks/workload");
+      return res.data.data;
+    });
+  },
+  getProjectsProgress: async () => {
+    const cacheKey = createCacheKey("/dashboard/projects/progress");
+    
+    return cachedRequest(cacheKey, async () => {
+      const res = await axios.get("/dashboard/projects/progress");
+      return res.data.data;
+    });
+  },
+  getActivity: async (range: "day" | "week" | "month" | "year" = "day") => {
+    const cacheKey = createCacheKey("/dashboard/activities/counts", { range });
+    
+    return cachedRequest(cacheKey, async () => {
+      const res = await axios.get(`/dashboard/activities/counts?range=${range}`);
+      return res.data.data;
+    });
+  },
+  getTaskByTeam: async () => {
+    const cacheKey = createCacheKey("/dashboard/teams/teams");
+    
+    return cachedRequest(cacheKey, async () => {
+      const res = await axios.get("/dashboard/teams/teams");
+      return res.data.data;
+    });
+  },
 };

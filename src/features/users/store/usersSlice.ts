@@ -26,6 +26,7 @@ interface UsersState {
   totalPages: number;
 
   loadingFetch: boolean;
+  loadingDetail: boolean;
   loadingMutation: boolean;
   loadingRoleCounts: boolean;
 
@@ -48,6 +49,7 @@ const initialState: UsersState = {
   totalPages: 0,
 
   loadingFetch: false,
+  loadingDetail: false,
   loadingMutation: false,
   loadingRoleCounts: false,
 
@@ -77,6 +79,12 @@ export const fetchAllUsers = createAsyncThunk<
     } catch (err) {
       return rejectWithValue(extractErrorMessage(err, "Failed to fetch user"));
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { users } = getState() as { users: UsersState };
+      return !users.loadingFetch;
+    },
   }
 );
 
@@ -87,7 +95,13 @@ export const fetchUserById = createAsyncThunk<User, string, { rejectValue: strin
         } catch (err) {
           return rejectWithValue(extractErrorMessage(err, "Failed to fecth user"));
         }
-    }
+    },
+    {
+    condition: (_, { getState }) => {
+      const { users } = getState() as { users: UsersState };
+      return !users.loadingDetail;
+    },
+  }
 );
 
 export const createUser = createAsyncThunk<User, CreateUserPayload, { rejectValue: string }>(
@@ -133,6 +147,12 @@ export const fetchRoleCounts = createAsyncThunk<
     } catch {
       return rejectWithValue("Failed to fetch role counts");
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { users } = getState() as { users: UsersState };
+      return !users.loadingRoleCounts;
+    },
   }
 );
 
@@ -168,15 +188,15 @@ const usersSlice = createSlice({
 
     builder
       .addCase(fetchUserById.pending, (state) => {
-        state.loadingFetch = true;
+        state.loadingDetail = true;
         state.errorFetch = null;
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.loadingFetch = false;
+        state.loadingDetail = false;
         state.selectedUser = action.payload;
       })
       .addCase(fetchUserById.rejected, (state, action) => {
-        state.loadingFetch = false;
+        state.loadingDetail = false;
         state.errorFetch = action.payload ?? null;
       });
 

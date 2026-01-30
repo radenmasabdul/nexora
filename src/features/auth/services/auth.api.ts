@@ -1,16 +1,17 @@
-import axios from "@/lib/axios"
-import { tokenService } from "./token.service"
-import type { LoginSchema } from "../schemas/login.schema"
+import axios from "@/lib/axios";
+import { tokenService } from "./token.service";
+import type { LoginSchema } from "../schemas/login.schema";
+import { clearAllCache } from "@/lib/requestCache";
 
 export const authApi = {
     login: async (payload: LoginSchema) => {
-        const res = await axios.post("/auth/login", payload)
+        const res = await axios.post("/auth/login", payload);
         
-        const token = res.data.data.token
-        const user = res.data.data.user
+        const token = res.data.data.token;
+        const user = res.data.data.user;
 
-        tokenService.set(token)
-        localStorage.setItem('auth', JSON.stringify({ token, user }))
+        tokenService.set(token);
+        localStorage.setItem('auth', JSON.stringify({ token, user }));
         
         return {
             user: res.data.data.user,
@@ -18,9 +19,10 @@ export const authApi = {
         }
     },
     logout: async () => {
-        await axios.post("/auth/logout")
+        await axios.post("/auth/logout");
+        clearAllCache();
         
-        tokenService.remove()
-        localStorage.removeItem('auth')
+        tokenService.remove();
+        localStorage.removeItem('auth');
     }
 }
