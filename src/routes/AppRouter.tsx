@@ -5,6 +5,7 @@ import LoginPage from "@/pages/auth/LoginPage"
 import DashboardPage from "@/pages/dashboard/DashboardPage"
 import UsersPage from "@/pages/users/UsersPage"
 import UsersDetail from "@/features/users/pages/detail/UsersDetail"
+import TeamsPage from "@/pages/teams/TeamPage"
 
 import NotFound from "@/pages/NotFound"
 
@@ -19,6 +20,7 @@ export default function AppRouter() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users/:id" element={<UsersDetail />} />
+            <Route path="/teams" element={<TeamsPage />} />
           </Route>
         </Route>
         
