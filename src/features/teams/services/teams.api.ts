@@ -11,7 +11,6 @@ export const teamsApi = {
         const res = await axios.post("/teams/create", payload);
 
         clearCache(createCacheKey("/teams/all", { page: 1, limit: 10, search: "" }));
-        clearCache(createCacheKey("/teams/counts"));
 
         return res.data.data;
     },
