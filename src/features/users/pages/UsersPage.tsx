@@ -101,11 +101,16 @@ export default function UsersPage() {
       }
 
       <CardContent>
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-2 md:gap-10 items-center">
           <div className="flex-1 min-w-70">
             <GlobalToolbar
-              options={roleOptions}
-              placeholder="Select Role"
+              filters={[
+                {
+                  key: "role",
+                  options: roleOptions,
+                  placeholder: "Select Role"
+                }
+              ]}
               onSearch={handleSearch}
             />
           </div>
