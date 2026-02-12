@@ -160,18 +160,6 @@ export const useTeams = () => {
         dispatch(clearSelectedTeam());
     }, [dispatch]);
 
-    const formatDate = (dateString: string): string => {
-        const date = new Date(dateString);
-
-        return new Intl.DateTimeFormat("id-ID", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }).format(date);
-    };
-
     const updateTeamInitial = useCallback((team: Team): TeamsUpdateSchema => ({
         name: team.name,
         description: team.description
@@ -254,7 +242,6 @@ export const useTeams = () => {
         setIsEditMode,
         updateTeamForm,
         onSubmitUpdate,
-        formatDate,
         updateTeamInitial,
         handleEditClick,
         handleCancelEdit,
