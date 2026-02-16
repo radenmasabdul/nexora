@@ -6,6 +6,7 @@ import sidebarReducer from "@/components/layout/layout/sidebar/store/sidebarSlic
 import dashboardReducer from "@/features/dashboard/store/dashboardSlice"
 import usersReducer from "@/features/users/store/usersSlice"
 import teamsReducer from "@/features/teams/store/teamsSlice"
+import teamMembersReducer from "@/features/teams/store/teamsMember.slice"
 
 export const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
         dashboard: dashboardReducer,
         users: usersReducer,
         teams: teamsReducer,
+        teamMembers: teamMembersReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

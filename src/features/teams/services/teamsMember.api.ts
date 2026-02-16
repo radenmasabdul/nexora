@@ -45,5 +45,13 @@ export const teamsMemberApi = {
         clearCache(createCacheKey("/members/all", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
+    },
+    getMemberByTeamId: async (id: string) => {
+        const cacheKey = createCacheKey(`/teams/${id}/members`);
+
+        return cachedRequest(cacheKey, async () => {
+            const res = await axios.get(`/teams/${id}/members`);
+            return res.data.data;
+        });
     }
 };

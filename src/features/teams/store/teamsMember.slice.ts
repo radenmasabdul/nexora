@@ -4,12 +4,27 @@ import { z } from "zod";
 import { teamsMemberSchema, teamsMemberUpdateSchema } from "../schemas/teamsMember.schema";
 import { extractErrorMessage } from "@/lib/error.messages";
 
+export interface TeamMemberUser {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export interface TeamMemberTeam {
+  id: string;
+  name: string;
+  description: string;
+};
+
 export interface TeamMember {
     id: string;
     team_id: string;
     user_id: string;
     role: string;
     joined_at: string;
+
+    user: TeamMemberUser;
+    team?: TeamMemberTeam;
 };
 
 export type CreateTeamMemberPayload = z.infer<typeof teamsMemberSchema>;
@@ -119,6 +134,16 @@ export const deleteTeamMember = createAsyncThunk<string, string, { rejectValue: 
     }
 );
 
+export const fetchTeamMembersByTeamId = createAsyncThunk<TeamMember[],{ teamId: string }, {rejectValue: string}>(
+    "teamMembers/fetchMemberByTeamId", async ({ teamId }, { rejectWithValue }) => {
+        try {
+            return await teamsMemberApi.getMemberByTeamId(teamId);
+        } catch (err) {
+           return rejectWithValue(extractErrorMessage(err, "Failed to fetch team members")); 
+        }
+    }
+);
+
 const teamsMemberSlice = createSlice({
     name: "teamMembers",
     initialState,
@@ -214,6 +239,19 @@ const teamsMemberSlice = createSlice({
             .addCase(deleteTeamMember.rejected, (state, action) => {
                 state.loadingMutation = false;
                 state.errorMutation = action.payload ?? null;
+            });
+
+        builder
+            .addCase(fetchTeamMembersByTeamId.pending, (state) => {
+                state.loadingFetch = true;
+            })
+            .addCase(fetchTeamMembersByTeamId.fulfilled, (state, action) => {
+                state.loadingFetch = false;
+                state.memberList = action.payload;
+            })
+            .addCase(fetchTeamMembersByTeamId.rejected, (state, action) => {
+                state.loadingFetch = false;
+                state.errorFetch = action.payload ?? null;
             });
     },
 });
