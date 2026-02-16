@@ -1,12 +1,12 @@
-import { UserPlus, Trash2, Loader2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from "@/components/ui/card";
-
-import { useTeamMembers } from "../../hooks/useTeamMembers";
-
 import { formatDate } from "@/lib/formatDate";
+import { useTeamMembers } from "../../hooks/useTeamMembers";
+import TeamMemberModal from "../../components/TeamMemberModal";
+import GlobalConfirmModal from "@/components/layout/GlobalConfirmModal";
 
 interface TeamMembersProps {
   teamId: string;
@@ -18,7 +18,12 @@ export default function TeamMembers({ teamId, isEditMode }: TeamMembersProps) {
   const {
     teamMemberList,
     loadingFetch,
-    openDeleteConfirm
+    openDeleteConfirm,
+    openConfirm,
+    setOpenConfirm,
+    handleDeleteMember,
+    deleteId,
+    loadingMutation
   } = useTeamMembers(teamId);
 
   return (
@@ -28,13 +33,12 @@ export default function TeamMembers({ teamId, isEditMode }: TeamMembersProps) {
           <h3 className="text-lg font-semibold text-primary">Team Members</h3>
           <Badge className="bg-info text-white">{teamMemberList.length} Members</Badge>
         </div>
-        <Button
-          disabled={!isEditMode}
-          variant="outline"
-          className={`bg-blue-600 text-white px-4 py-5 rounded-lg ${!isEditMode ? "hidden" : ""}`}
-        >
-          <UserPlus className="w-4 h-4 mr-2" /> Add Member
-        </Button>
+        
+        <TeamMemberModal 
+          teamId={teamId}
+          isEditMode={isEditMode}
+          className={`${!isEditMode ? "hidden" : ""}`}
+        />
       </div>
 
       <Card className="border-0 shadow-none">
@@ -92,7 +96,7 @@ export default function TeamMembers({ teamId, isEditMode }: TeamMembersProps) {
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="text-red-500 hover:text-red-600"
+                  className={`text-red-500 hover:text-red-600 cursor-pointer ${!isEditMode ? "hidden" : ""}`}
                   onClick={() => openDeleteConfirm(member.id)}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -102,6 +106,17 @@ export default function TeamMembers({ teamId, isEditMode }: TeamMembersProps) {
           ))}
         </CardContent>
       </Card>
+
+      <GlobalConfirmModal
+        open={openConfirm}
+        title="Delete Team Member"
+        description="Are you sure you want to remove this member from the team?"
+        onConfirm={() => deleteId && handleDeleteMember(deleteId)}
+        onCancel={() => setOpenConfirm(false)}
+        loading={loadingMutation}
+        isEditMode={isEditMode}
+        className={`${!isEditMode ? "hidden" : ""}`}
+      />
     </main>
   )
 }

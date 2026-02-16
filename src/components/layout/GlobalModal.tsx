@@ -12,24 +12,26 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 type GlobalModalProps = {
-    name: string;
-    className?: string;
-    title?: string;
-    description?: string;
-    cancelText?: string;
-    submitText?: string;
-    icon: LucideIcon;
-    open: boolean;
-    loading?: boolean;
-    children: React.ReactNode;
-    onSubmit: (e: React.FormEvent) => void;
-    onCancel?: () => void;
-    onOpenChange: (open: boolean) => void;
-}
+  name: string;
+  className?: string;
+  classStyle?: string;
+  title?: string;
+  description?: string;
+  cancelText?: string;
+  submitText?: string;
+  icon: LucideIcon;
+  open: boolean;
+  loading?: boolean;
+  children: React.ReactNode;
+  onSubmit: (e: React.FormEvent) => void;
+  onCancel?: () => void;
+  onOpenChange: (open: boolean) => void;
+};
 
 export default function GlobalModal({ 
   name, 
-  className, 
+  className,
+  classStyle,
   title, 
   description, 
   cancelText = "Cancel", 
@@ -45,7 +47,7 @@ export default function GlobalModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>
-            <Button variant="outline" className="bg-blue-600 text-white px-4 py-5 rounded-lg cursor-pointer">
+            <Button variant="outline" className={`bg-blue-600 text-white px-4 py-5 rounded-lg cursor-pointer ${classStyle}`}>
                 <Icon className="w-4 h-4 text-white" />
                 <span className="text-white">{name}</span>
             </Button>

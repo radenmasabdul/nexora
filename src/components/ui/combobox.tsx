@@ -96,14 +96,17 @@ function ComboboxContent({
   align = "start",
   alignOffset = 0,
   anchor,
+  modal,
   ...props
 }: ComboboxPrimitive.Popup.Props &
   Pick<
     ComboboxPrimitive.Positioner.Props,
     "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
-  >) {
+  > & {
+    modal?: boolean
+  }) {
   return (
-    <ComboboxPrimitive.Portal>
+    <ComboboxPrimitive.Portal container={modal === false ? document.body : undefined}>
       <ComboboxPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}

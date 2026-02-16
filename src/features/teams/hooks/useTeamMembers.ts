@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setAlert } from "@/app/state/alertSlice";
 import { createTeamMember, deleteTeamMember, fetchTeamMembersByTeamId } from "../store/teamsMember.slice";
+import { fetchAllUsers } from "@/features/users/store/usersSlice";
 import { teamsMemberSchema } from "../schemas/teamsMember.schema";
 import type { AppDispatch, RootState } from "@/store";
 import type { TeamsMemberSchema } from "../schemas/teamsMember.schema";
@@ -16,14 +17,14 @@ interface NewTeamMember {
     role: RoleInTeam | "";
 };
 
-export const useTeamMembers = (teamId: string) => {
+export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     const dispatch = useDispatch<AppDispatch>();
     const hasInitialized = useRef(false);
 
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-    const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isEditModeLocal, setIsEditModeLocal] = useState<boolean>(isEditModeProp || false);
 
     const {
         memberList: teamMemberList,
@@ -35,6 +36,14 @@ export const useTeamMembers = (teamId: string) => {
         errorFetch,
         errorMutation,
     } = useSelector((state: RootState) => state.teamMembers);
+
+    const { userList } = useSelector((state: RootState) => state.users);
+
+    const roleOptions = [
+        { label: "Owner", value: "owner" },
+        { label: "Lead", value: "lead" },
+        { label: "Member", value: "member" },
+    ];
 
     useEffect(() => {
         if(!hasInitialized.current) {
@@ -52,6 +61,10 @@ export const useTeamMembers = (teamId: string) => {
 
         return () => clearTimeout(timer);
     }, [dispatch, teamId]);
+
+    useEffect(() => {
+        dispatch(fetchAllUsers({ page: 1, limit: 100 }));
+    }, [dispatch]);
 
     const newTeamMemberInitial: NewTeamMember = {
         team_id: teamId,
@@ -94,7 +107,7 @@ export const useTeamMembers = (teamId: string) => {
     const openDeleteConfirm = (id: string) => {
         setDeleteId(id);
         setOpenConfirm(true);
-    }
+    };
 
     const handleDeleteMember = async (id: string) => {
         if (!deleteId) return;
@@ -121,6 +134,8 @@ export const useTeamMembers = (teamId: string) => {
 
     return {
         teamMemberList,
+        roleOptions,
+        userList,
         currentPage,
         totalData,
         totalPages,
@@ -132,8 +147,8 @@ export const useTeamMembers = (teamId: string) => {
         setOpenModal,
         openConfirm,
         setOpenConfirm,
-        isEditMode,
-        setIsEditMode,
+        isEditMode: isEditModeProp !== undefined ? isEditModeProp : isEditModeLocal,
+        setIsEditMode: setIsEditModeLocal,
         saveNewForm,
         onSubmit,
         handleSubmit: rfhSubmit(onSubmit),

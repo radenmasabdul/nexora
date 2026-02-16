@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const teamsMemberSchema = z.object({
     team_id: z.string().min(1, { message: "Team ID is required." }),
 
-    user_id: z.string().min(1, { message: "User ID is required." }),
+    user_id: z.string().min(1, { message: "Please select a team member." }),
 
     role: z.enum(["owner", "lead", "member", ""], {
         message: "Invalid role"

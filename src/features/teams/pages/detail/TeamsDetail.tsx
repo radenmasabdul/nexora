@@ -164,7 +164,7 @@ export default function TeamsDetail() {
         onCancel={() => setOpenConfirm(false)}
         onConfirm={async () => {
           await handleDeleteTeam(team.id);
-          navigate("/users");
+          navigate("/teams");
         }}
       />
     </PageContainer>
