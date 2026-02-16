@@ -106,10 +106,10 @@ export const useUsers = () => {
     dispatch(fetchAllUsers({ page, limit: 10, search, role }));
   };
 
-  const handleSearch = (payload: { keyword: string; filter: string }) => {
+  const handleSearch = (payload: { keyword: string; filters: Record<string, string> }) => {
     setSearch(payload.keyword);
-    setRole(payload.filter);
-    dispatch(fetchAllUsers({ page: 1, limit: 10, search: payload.keyword, role: payload.filter }));
+    setRole(payload.filters.role || "");
+    dispatch(fetchAllUsers({ page: 1, limit: 10, search: payload.keyword, role: payload.filters.role || "" }));
   };
 
   const tableData = useMemo(() => {

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Mail, Calendar, User, Shield, ArrowLeft, Edit, Trash2, Loader2, X, Save, Eye, EyeOff, Camera } from "lucide-react";
+import { Mail, Calendar, User, Shield, Loader2, Eye, EyeOff, Camera } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,8 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUsers } from "../../hooks/useUsers";
 import PageContainer from "@/components/layout/PageContainer";
+import GlobalDetailHeader from "@/components/layout/GlobalDetailHeader";
 import GlobalConfirmModal from "@/components/layout/GlobalConfirmModal";
 import GlobalSelect from "@/components/layout/GlobalSelect";
+import GlobalErrorState from "@/components/layout/GlobalErrorState";
 
 export default function UsersDetail() {
   const { id } = useParams<{ id: string }>();
@@ -74,19 +76,15 @@ export default function UsersDetail() {
         </div>
       </PageContainer>
     );
-  }
+  };
 
   if (error) {
     return (
       <PageContainer>
-        <Card className="border-red-200 bg-red-50">
-          <CardHeader className="pt-6 text-center text-red-700">
-            {error}
-          </CardHeader>
-        </Card>
+        <GlobalErrorState message={error} />
       </PageContainer>
     );
-  }
+  };
 
   if (!user) {
     return (
@@ -96,70 +94,23 @@ export default function UsersDetail() {
         </div>
       </PageContainer>
     );
-  }
+  };
 
   const style = `w-full pr-4 py-2.5 text-primary border border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`;
 
   return (
     <PageContainer>
-      <div className="flex items-center justify-between">
-        <Button 
-          variant="ghost" 
-          className="bg-blue-600 hover:bg-blue-700 text-white gap-2 cursor-pointer" 
-          onClick={() => navigate("/users")}
-          disabled={isEditMode}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
-        
-        <div className="flex gap-2">
-          {isEditMode ? (
-            <>
-              <Button 
-                type="button"
-                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
-                onClick={handleCancelEdit}
-                disabled={loadingMutation}
-              >
-                <X className="w-4 h-4 mr-2" />
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
-                onClick={id ? handleSubmitUpdate(id) : undefined}
-                disabled={loadingMutation}
-              >
-                {loadingMutation ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
-                )}
-                Save Changes
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button 
-                className="bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
-                onClick={() => user && handleEditClick(user)}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Profile
-              </Button>
-
-              <Button 
-                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
-                onClick={() => openDeleteConfirm(user.id)}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Account
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
+      <GlobalDetailHeader
+        backTo="/users"
+        isEditMode={isEditMode}
+        loading={loadingMutation}
+        onEdit={() => user && handleEditClick(user)}
+        onCancel={handleCancelEdit}
+        onSave={id ? handleSubmitUpdate(id) : undefined}
+        onDelete={() => openDeleteConfirm(user.id)}
+        editLabel="Edit Profile"
+        deleteLabel="Delete Account"
+      />
 
       <Card className="bg-surface rounded-xl shadow-sm border border-default p-5">
         <CardHeader>

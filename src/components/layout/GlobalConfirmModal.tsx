@@ -14,6 +14,8 @@ type ConfirmModalProps = {
   onConfirm: () => void;
   onCancel: () => void;
   loading?: boolean;
+  isEditMode?: boolean;
+  className?: string;
 };
 
 export default function GlobalConfirmModal({
@@ -23,10 +25,14 @@ export default function GlobalConfirmModal({
   onConfirm,
   onCancel,
   loading,
+  isEditMode = true,
+  className,
 }: ConfirmModalProps) {
+  if (!isEditMode) return null;
+
   return (
     <Dialog open={open} onOpenChange={onCancel}>
-      <DialogContent className="bg-surface">
+      <DialogContent className={`bg-surface ${className || ""}`}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
