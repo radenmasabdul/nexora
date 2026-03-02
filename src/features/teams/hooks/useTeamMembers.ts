@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setAlert } from "@/app/state/alertSlice";
-import { createTeamMember, deleteTeamMember, fetchTeamMembersByTeamId } from "../store/teamsMember.slice";
+import { createTeamMember, deleteTeamMember, fetchTeamMembersByTeamId } from "../store/teamsMemberSlice";
 import { fetchAllUsers } from "@/features/users/store/usersSlice";
 import { teamsMemberSchema } from "../schemas/teamsMember.schema";
 import type { AppDispatch, RootState } from "@/store";
