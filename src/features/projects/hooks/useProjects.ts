@@ -1,0 +1,302 @@
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { setAlert } from "@/app/state/alertSlice";
+import {
+    fetchAllProjects,
+    fetchProjectById,
+    createProject,
+    updateProject,
+    deleteProject,
+    clearSelectedProject,
+    type Project,
+} from "../store/projectsSlice";
+import { projectsSchema, projectUpdateSchema } from "../schemas/projects.schema";
+import type { AppDispatch, RootState } from "@/store";
+import type { ProjectsSchema, ProjectsUpdateSchema } from "../schemas/projects.schema";
+import { format } from "date-fns";
+
+type StatusProjects = "active" | "on_hold" | "completed";
+
+interface NewProject {
+    team_id: string;
+    name: string;
+    description: string;
+    status: StatusProjects | "";
+    deadline: string;
+}
+
+export const useProjects = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const hasInitialized = useRef(false);
+
+    const [search, setSearch] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+
+    const [projectName, setProjectName] = useState<string>("");
+    const [projectDescription, setProjectDescription] = useState<string>("");
+    const [selectedFormStatus, setSelectedFormStatus] = useState<StatusProjects | "">("");
+    const [projectDeadline, setProjectDeadline] = useState<string>("");
+
+    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+    const [isEditMode, setIsEditMode] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+
+    const {
+        projectList,
+        selectedProject,
+        currentPage,
+        totalData,
+        totalPages,
+        loadingFetch,
+        loadingDetail,
+        loadingMutation,
+        errorFetch,
+        errorMutation,
+    } = useSelector((state: RootState) => state.projects);
+
+    useEffect(() => {
+        if(!hasInitialized.current) {
+            dispatch(fetchAllProjects({ page: 1, limit: 10, search: "", status: "" }));
+            hasInitialized.current = true;
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        if(!hasInitialized.current) return;
+
+        const timer = setTimeout(() => {
+            dispatch(fetchAllProjects({ page: 1, limit: 10, search, status }));
+        })
+
+        return () => clearTimeout(timer);
+    }, [dispatch, search, status]);
+
+    const statusOptions = [
+        { label: "Active", value: "active" },
+        { label: "On Hold", value: "on_hold" },
+        { label: "Completed", value: "completed" },
+    ];
+
+    const formatStatus = (status: string) => {
+        const map: Record<string, string> = {
+            active: "Active",
+            on_hold: "On Hold",
+            completed: "Completed",
+        };
+        
+        return map[status] ?? status;
+    };
+
+    const newProjectsInitial: NewProject = {
+        team_id: "",
+        name: "",
+        description: "",
+        status: "" as StatusProjects | "",
+        deadline: "",
+    };
+
+    const saveNewForm = useForm<ProjectsSchema>({
+        resolver: zodResolver(projectsSchema),
+        defaultValues: newProjectsInitial,
+    });
+
+    const handlePageChange = (page: number) => {
+        dispatch(fetchAllProjects({ page, limit: 10, search, status }))
+    };
+
+    const handleSearch = (payload: { keyword: string; filters: Record<string, string> }) => {
+        setSearch(payload.keyword);
+        setStatus(payload.filters.status || "")
+        dispatch(fetchAllProjects({ page: 1, limit: 10, search: payload.keyword, status: payload.filters.status || "" }))
+    };
+
+    const tableData = useMemo(() => {
+        return projectList.map((projects) => ({
+            id: projects.id,
+            team_id: projects.team_id,
+            name: projects.name,
+            description: projects.description,
+            status: formatStatus(projects.status),
+            deadline: format(new Date(projects.deadline), "dd/MM/yyyy"),
+        }))
+    }, [projectList]);
+
+    const { handleSubmit: rhfSubmit } = saveNewForm;
+
+    const onSubmit = async (data: ProjectsSchema) => {
+        try {
+            await dispatch(createProject(data)).unwrap();
+
+            dispatch(setAlert({
+                message: "Project created successfully",
+                type: "success",
+            }));
+
+            dispatch(fetchAllProjects({
+                page: currentPage,
+                limit: 10,
+                search,
+                status
+            }));
+
+            handleResetForm();
+            setOpenModal(false);
+        } catch (error) {
+            dispatch(setAlert({
+                message: error as string,
+                type: 'error',
+            }));
+        }
+    };
+
+    const handleResetForm = () => {
+        saveNewForm.reset();
+        setSelectedFormStatus("");
+    };
+
+    const openDeleteConfirm = (id: string) => {
+        setDeleteId(id);
+        setOpenConfirm(true);
+    };
+
+    const handleDeleteProject = async (id: string) => {
+        if (!deleteId) return;
+
+        try {
+            await dispatch(deleteProject(id)).unwrap();
+
+            dispatch(setAlert({
+                message: "Project deleted successfully",
+                type: "success",
+            }));
+
+            dispatch(fetchAllProjects({
+                page: currentPage,
+                limit: 10,
+                search,
+                status
+            }));
+
+            setOpenConfirm(false);
+            setDeleteId(null);
+        } catch (error) {
+            dispatch(setAlert({
+                message: error as string,
+                type: "error"
+            })); 
+        }
+    }
+
+    const fetchProjectsDetail = useCallback((id: string) => {
+        dispatch(fetchProjectById(id));
+    }, [dispatch]);
+
+    const clearProjectDetail = useCallback(() => {
+        dispatch(clearSelectedProject());
+    }, [dispatch]);
+
+    const updateProjectInitial = useCallback((project: Project): ProjectsUpdateSchema => ({
+        team_id: project.team_id,
+        name: project.name,
+        description: project.description,
+        status: project.status,
+        deadline: format(new Date(project.deadline), "yyyy-MM-dd"),
+    }), []);
+
+    const updateProjectForm = useForm<ProjectsUpdateSchema>({
+        resolver: zodResolver(projectUpdateSchema),
+    });
+
+    const onSubmitUpdate = useCallback(async (id: string, payload: ProjectsUpdateSchema) => {
+        try {
+            await dispatch(updateProject({id, payload})).unwrap();
+
+            dispatch(setAlert({
+                message: "Project update successfully",
+                type: "success"
+            }));
+
+            setIsEditMode(false);
+            dispatch(fetchProjectById(id));
+        } catch (error) {
+            dispatch(setAlert({
+                message: error as string,
+                type: "error"
+            }));
+        }
+    }, [dispatch]);
+
+    const handleEditClick = useCallback((project: Project) => {
+        updateProjectForm.reset({
+            name: project.name,
+            description: project.description,
+            status: project.status,
+            deadline: project.deadline
+        });
+        setIsEditMode(true);
+    }, [updateProjectForm]);
+
+    const handleCancelEdit = useCallback(() => {
+        setIsEditMode(false);
+        updateProjectForm.reset();
+    }, [updateProjectForm])
+
+    const handleSubmitUpdate = useCallback((id: string) => {
+        return updateProjectForm.handleSubmit((data: ProjectsUpdateSchema) => {
+            if (!data) return;
+
+            onSubmitUpdate(id, data);
+        })
+    }, [updateProjectForm, onSubmitUpdate])
+
+    return {
+        projectList,
+        selectedProject,
+        currentPage,
+        totalData,
+        totalPages,
+        loadingFetch,
+        loadingDetail,
+        loadingMutation,
+        errorFetch,
+        errorMutation,
+        tableData,
+        handlePageChange,
+        projectName,
+        setProjectName,
+        projectDescription,
+        setProjectDescription,
+        selectedFormStatus,
+        setSelectedFormStatus,
+        projectDeadline,
+        setProjectDeadline,
+        search,
+        setSearch,
+        handleSearch,
+        statusOptions,
+        saveNewForm,
+        onSubmit,
+        handleSubmit: rhfSubmit(onSubmit),
+        handleResetForm,
+        openModal,
+        setOpenModal,
+        openConfirm,
+        setOpenConfirm,
+        openDeleteConfirm,
+        handleDeleteProject,
+        deleteId,
+        fetchProjectsDetail,
+        clearProjectDetail,
+        isEditMode,
+        setIsEditMode,
+        updateProjectForm,
+        onSubmitUpdate,
+        updateProjectInitial,
+        handleEditClick,
+        handleCancelEdit,
+        handleSubmitUpdate,
+    };
+}

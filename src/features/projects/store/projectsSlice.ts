@@ -4,14 +4,22 @@ import { z } from "zod";
 import { projectsSchema, projectUpdateSchema } from "../schemas/projects.schema";
 import { extractErrorMessage } from "@/lib/error.messages";
 
+export interface ProjectTeams {
+    id: string;
+    name: string;
+    description: string;
+}
+
 export interface Project {
     id: string;
     team_id: string;
     name: string;
     description: string;
     status: "active" | "on_hold" | "completed";
+    deadline: string;
     created_at: string;
     updated_at: string;
+    team?: ProjectTeams;
 }
 
 export type CreateProjectPayload = z.infer<typeof projectsSchema>;
@@ -59,7 +67,7 @@ export const fetchAllProjects = createAsyncThunk<
 { page: number; limit: number; search?: string; status?: string },
 { rejectValue: string }
 >(
-    "projects/fetchAll", async ({ page, limit, search, status }, { rejectWithValue }) => {
+    "projects/fetchAllProjects", async ({ page, limit, search, status }, { rejectWithValue }) => {
         try {
             return await projectsApi.getAllProjects({ page, limit, search, status });
         } catch (err) {
@@ -75,7 +83,7 @@ export const fetchAllProjects = createAsyncThunk<
 );
 
 export const fetchProjectById = createAsyncThunk<Project, string, { rejectValue: string }>(
-    "projects/fetchById", async (id, { rejectWithValue }) => {
+    "projects/fetchProjectById", async (id, { rejectWithValue }) => {
         try {
             return await projectsApi.getProjectsById(id);
         } catch (err) {
