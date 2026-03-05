@@ -21,6 +21,7 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     const dispatch = useDispatch<AppDispatch>();
     const hasInitialized = useRef(false);
 
+    const [searchUser, setSearchUser] = useState<string>("");
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -63,8 +64,14 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     }, [dispatch, teamId]);
 
     useEffect(() => {
-        dispatch(fetchAllUsers({ page: 1, limit: 100 }));
-    }, [dispatch]);
+        const delay = setTimeout(() => {
+            if (searchUser.length < 3) return;
+            
+            dispatch(fetchAllUsers({ page: 1, limit: 20, search: searchUser }));
+        }, 300);
+        
+        return () => clearTimeout(delay);
+    }, [searchUser, dispatch]);
 
     const newTeamMemberInitial: NewTeamMember = {
         team_id: teamId,
@@ -156,5 +163,7 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
         openDeleteConfirm,
         handleDeleteMember,
         deleteId,
+        searchUser,
+        setSearchUser
     };
 }

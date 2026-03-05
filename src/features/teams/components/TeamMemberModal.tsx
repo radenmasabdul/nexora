@@ -22,6 +22,7 @@ export default function TeamMemberModal({ teamId, isEditMode, className }: TeamM
     openModal,
     setOpenModal,
     loadingMutation,
+    setSearchUser,
   } = useTeamMembers(teamId, isEditMode);
 
   const selectedUserId = saveNewForm.watch("user_id");
@@ -55,6 +56,7 @@ export default function TeamMemberModal({ teamId, isEditMode, className }: TeamM
           }))}
             value={selectedUserId}
             onChange={(val) => saveNewForm.setValue("user_id", val, { shouldValidate: true })}
+            onSearch={(keyword) => setSearchUser(keyword)}
             contentClassName="bg-surface"
           />
           {saveNewForm.formState.errors.user_id && (

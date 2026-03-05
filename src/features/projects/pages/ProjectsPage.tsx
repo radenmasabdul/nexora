@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
+import { Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useProjects } from '../hooks/useProjects';
 import PageContainer from '@/components/layout/PageContainer';
 import GlobalHeader from '@/components/layout/GlobalHeader';
 import GlobalToolbar from '@/components/layout/GlobalToolbar';
 import GlobalDataTable from '@/components/layout/GlobalDataTable';
 import CardContent from '@/components/layout/CardContent';
-import { Button } from '@/components/ui/button';
-import { useProjects } from '../hooks/useProjects';
-import { Send } from 'lucide-react';
+import ProjectsModal from '../components/ProjectsModal';
 
 export default function ProjectsPage() {
   const {
@@ -76,7 +77,7 @@ export default function ProjectsPage() {
             />
           </div>
 
-          {/* <ProjectsModal /> */}
+          <ProjectsModal />
         </div>
 
         <GlobalDataTable

@@ -12,7 +12,7 @@ export const projectsSchema = z.object({
         .min(1, { message: "Description is required" }),
     deadline: z
         .string()
-        .min(1, { message: "Start date is required" }),
+        .min(1, { message: "Deadline is required" }),
     status: z
         .enum(["active", "on_hold", "completed", ""], {
             message: "Invalid status"
@@ -33,7 +33,7 @@ export const projectUpdateSchema = z.object({
         .min(1, { message: "Description is required" }),
     deadline: z
         .string()
-        .min(1, { message: "Start date is required" }),
+        .min(1, { message: "Deadline is required" }),
     status: z
         .enum(["active", "on_hold", "completed", ""], {
             message: "Invalid status"

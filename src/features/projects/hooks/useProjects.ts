@@ -12,6 +12,7 @@ import {
     clearSelectedProject,
     type Project,
 } from "../store/projectsSlice";
+import { fetchAllTeams } from "@/features/teams/store/teamsSlice";
 import { projectsSchema, projectUpdateSchema } from "../schemas/projects.schema";
 import type { AppDispatch, RootState } from "@/store";
 import type { ProjectsSchema, ProjectsUpdateSchema } from "../schemas/projects.schema";
@@ -34,10 +35,11 @@ export const useProjects = () => {
     const [search, setSearch] = useState<string>("");
     const [status, setStatus] = useState<string>("");
 
+    const [searchTeam, setSearchTeam] = useState<string>("");
     const [projectName, setProjectName] = useState<string>("");
     const [projectDescription, setProjectDescription] = useState<string>("");
     const [selectedFormStatus, setSelectedFormStatus] = useState<StatusProjects | "">("");
-    const [projectDeadline, setProjectDeadline] = useState<string>("");
+    const [projectDeadline, setProjectDeadline] = useState<Date | undefined>(new Date());
 
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
@@ -57,6 +59,8 @@ export const useProjects = () => {
         errorMutation,
     } = useSelector((state: RootState) => state.projects);
 
+    const { teamList } = useSelector((state: RootState) => state.teams);
+
     useEffect(() => {
         if(!hasInitialized.current) {
             dispatch(fetchAllProjects({ page: 1, limit: 10, search: "", status: "" }));
@@ -73,6 +77,16 @@ export const useProjects = () => {
 
         return () => clearTimeout(timer);
     }, [dispatch, search, status]);
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            if (searchTeam.length < 3) return;
+
+            dispatch(fetchAllTeams({ page: 1, limit: 20, search: searchTeam}));
+        }, 300);
+
+        return () => clearTimeout(delay);
+    }, [searchTeam, dispatch]);
 
     const statusOptions = [
         { label: "Active", value: "active" },
@@ -155,6 +169,7 @@ export const useProjects = () => {
     const handleResetForm = () => {
         saveNewForm.reset();
         setSelectedFormStatus("");
+        setProjectDeadline(undefined);
     };
 
     const openDeleteConfirm = (id: string) => {
@@ -254,6 +269,7 @@ export const useProjects = () => {
 
     return {
         projectList,
+        teamList,
         selectedProject,
         currentPage,
         totalData,
@@ -298,5 +314,7 @@ export const useProjects = () => {
         handleEditClick,
         handleCancelEdit,
         handleSubmitUpdate,
+        searchTeam,
+        setSearchTeam
     };
 }
