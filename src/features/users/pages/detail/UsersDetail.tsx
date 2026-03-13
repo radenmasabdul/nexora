@@ -29,6 +29,7 @@ export default function UsersDetail() {
     getInitials,
     formatDate,
     getRoleBadgeColor,
+    humanizeRole,
     openConfirm,
     setOpenConfirm,
     openDeleteConfirm,
@@ -246,7 +247,7 @@ export default function UsersDetail() {
                   onChange={(value) =>
                     setValue(
                       "role",
-                      value as "admin" | "manager" | "member" | ""
+                      value as "" | "administrator" | "manager_division" | "project_owner" | "staff"
                     )
                   }
                 />
@@ -267,7 +268,7 @@ export default function UsersDetail() {
                 <div>
                   <Badge className={getRoleBadgeColor(user.role)}>
                     <Shield className="w-3 h-3 mr-1" />
-                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    {humanizeRole(user.role)}
                   </Badge>
                 </div>
               </div>

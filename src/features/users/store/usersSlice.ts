@@ -8,7 +8,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "manager" | "member";
+  role: "administrator" | "manager_division" | "project_owner" | "staff";
   avatar_url?: string | null;
   created_at: string;
   updated_at: string;
@@ -34,9 +34,10 @@ interface UsersState {
   errorMutation: string | null;
 
   roleCounts: {
-    admin: number;
-    manager: number;
-    member: number;
+    administrator: number;
+    manager_division: number;
+    project_owner: number;
+    staff: number;
   };
 }
 
@@ -57,9 +58,10 @@ const initialState: UsersState = {
   errorMutation: null,
 
   roleCounts: {
-    admin: 0,
-    manager: 0,
-    member: 0,
+    administrator: 0,
+    manager_division: 0,
+    project_owner: 0,
+    staff: 0,
   }
 };
 
@@ -136,7 +138,7 @@ export const deleteUser = createAsyncThunk<string, string, { rejectValue: string
 );
 
 export const fetchRoleCounts = createAsyncThunk<
-  { admin: number; manager: number; member: number },
+  { administrator: number; manager_division: number; project_owner: number, staff: number },
   void,
   { rejectValue: string }
 >(

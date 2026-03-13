@@ -7,18 +7,18 @@ type CreateUserPayload = z.infer<typeof usersSchema>
 
 export const usersApi = {
     createUsers: async (payload : CreateUserPayload) => {
-        const res = await axios.post("/users/create", payload);
+        const res = await axios.post("/users", payload);
 
-        clearCache(createCacheKey("/users/all", { page: 1, limit: 10, search: "", role: "" }));
+        clearCache(createCacheKey("/users", { page: 1, limit: 10, search: "", role: "" }));
         clearCache(createCacheKey("/users/roles/counts"));
 
         return res.data.data;
     },
     getAllUsers: async (params: { page: number; limit: number; search?: string; role?: string }) => {
-        const cacheKey = createCacheKey("/users/all", params);
+        const cacheKey = createCacheKey("/users", params);
     
         return cachedRequest(cacheKey, async () => {
-            const res = await axios.get("/users/all", { params });
+            const res = await axios.get("/users", { params });
             return res.data;
         });
     },
@@ -31,20 +31,20 @@ export const usersApi = {
         });
     },
     updateUsers: async (id: string, payload : FormData) => {
-        const res = await axios.put(`/users/update/${id}`, payload, {
+        const res = await axios.patch(`/users/${id}`, payload, {
             headers: { "Content-Type": "multipart/form-data" }
         });
 
         clearCache(createCacheKey(`/users/${id}`));
-        clearCache(createCacheKey("/users/all", { page: 1, limit: 10, search: "", role: "" }));
+        clearCache(createCacheKey("/users", { page: 1, limit: 10, search: "", role: "" }));
 
         return res.data.data
     },
     deleteUsers: async (id: string) => {
-        const res = await axios.delete(`/users/delete/${id}`);
+        const res = await axios.delete(`/users/${id}`);
 
         clearCache(createCacheKey(`/users/${id}`));
-        clearCache(createCacheKey("/users/all", { page: 1, limit: 10, search: "", role: "" }));
+        clearCache(createCacheKey("/users/", { page: 1, limit: 10, search: "", role: "" }));
         clearCache(createCacheKey("/users/roles/counts"));
         
         return res.data.data;
