@@ -9,7 +9,7 @@ import { teamsMemberSchema } from "../schemas/teamsMember.schema";
 import type { AppDispatch, RootState } from "@/store";
 import type { TeamsMemberSchema } from "../schemas/teamsMember.schema";
 
-type RoleInTeam = "owner" | "lead" | "member";
+type RoleInTeam = "project_owner" | "team_leader" | "developer";
 
 interface NewTeamMember {
     team_id: string;
@@ -41,9 +41,9 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     const { userList } = useSelector((state: RootState) => state.users);
 
     const roleOptions = [
-        { label: "Owner", value: "owner" },
-        { label: "Lead", value: "lead" },
-        { label: "Member", value: "member" },
+        { label: "Project Owner", value: "project_owner" },
+        { label: "Team Leader", value: "team_leader" },
+        { label: "Developer", value: "developer" },
     ];
 
     useEffect(() => {
@@ -139,6 +139,13 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
         }
     };
 
+    const humanizeRole = (role: string) => {
+        return role
+        .split("_")
+        .map(word => word[0].toUpperCase() + word.slice(1))
+        .join(" ");
+    };
+
     return {
         teamMemberList,
         roleOptions,
@@ -164,6 +171,7 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
         handleDeleteMember,
         deleteId,
         searchUser,
-        setSearchUser
+        setSearchUser,
+        humanizeRole
     };
 }

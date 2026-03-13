@@ -5,7 +5,7 @@ export const teamsMemberSchema = z.object({
 
     user_id: z.string().min(1, { message: "Please select a team member." }),
 
-    role: z.enum(["owner", "lead", "member", ""], {
+    role: z.enum(["project_owner", "team_leader", "developer", ""], {
         message: "Invalid role"
     }).refine((val) => val !== "", {
         message: "Please select a role"
@@ -17,7 +17,7 @@ export const teamsMemberUpdateSchema = z.object({
 
     user_id: z.string().min(1, { message: "User ID is required." }),
 
-    role: z.enum(["owner", "lead", "member", ""], {
+    role: z.enum(["project_owner", "team_leader", "developer", ""], {
         message: "Invalid role"
     }).refine((val) => val !== "", { 
         message: "Please select a role"

@@ -8,17 +8,17 @@ type UpdateTeamMemberPayload = z.infer<typeof teamsMemberUpdateSchema>;
 
 export const teamsMemberApi = {
     createMember: async (payload: CreateTeamMemberPayload) => {
-        const res = await axios.post("/members/create", payload);
+        const res = await axios.post("/members", payload);
 
-        clearCache(createCacheKey("/members/all", { page: 1, limit: 10, search: "" }));
+        clearCache(createCacheKey("/members", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
     },
     getAllMembers: async (params: { page: number; limit: number; search?: string }) => {
-        const cacheKey = createCacheKey("/members/all", params);
+        const cacheKey = createCacheKey("/members", params);
 
         return cachedRequest(cacheKey, async () => {
-            const res = await axios.get("/members/all", { params });
+            const res = await axios.get("/members", { params });
             return res.data;
         });
     },
@@ -31,18 +31,18 @@ export const teamsMemberApi = {
         });
     },
     updateMember: async (id: string, payload: UpdateTeamMemberPayload) => {
-        const res = await axios.put(`/members/update/${id}`, payload);
+        const res = await axios.patch(`/members/${id}`, payload);
 
         clearCache(createCacheKey(`/members/${id}`));
-        clearCache(createCacheKey("/members/all", { page: 1, limit: 10, search: "" }));
+        clearCache(createCacheKey("/members", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
     },
     deleteMember: async (id: string) => {
-        const res = await axios.delete(`/members/delete/${id}`);
+        const res = await axios.delete(`/members/${id}`);
 
         clearCache(createCacheKey(`/members/${id}`));
-        clearCache(createCacheKey("/members/all", { page: 1, limit: 10, search: "" }));
+        clearCache(createCacheKey("/members", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
     },
