@@ -103,7 +103,7 @@ export default function DashboardPage() {
                 data={formattedTaskStatus}
                 dataKey="count"
                 nameKey="status"
-                colors={["#3B82F6", "#10B981", "#F59E0B"]}
+                colors={["#3B82F6", "#8B5CF6", "#F59E0B", "#10B981"]}
               />
             </CardChart>
 
