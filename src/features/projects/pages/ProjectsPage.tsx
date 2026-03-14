@@ -39,7 +39,7 @@ export default function ProjectsPage() {
       width: '5%',
       render: (row: TableRow) => (
         <div className="flex justify-center gap-2">
-          <Link to={`/users/${row.id}`}>
+          <Link to={`/projects/${row.id}`}>
             <Button
             size="sm"
             variant="outline"

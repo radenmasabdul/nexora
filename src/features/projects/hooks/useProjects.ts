@@ -18,7 +18,7 @@ import type { AppDispatch, RootState } from "@/store";
 import type { ProjectsSchema, ProjectsUpdateSchema } from "../schemas/projects.schema";
 import { format } from "date-fns";
 
-type StatusProjects = "active" | "on_hold" | "completed";
+type StatusProjects = "planning" | "in_progress" | "on_hold" | "completed";
 
 interface NewProject {
     team_id: string;
@@ -39,7 +39,7 @@ export const useProjects = () => {
     const [projectName, setProjectName] = useState<string>("");
     const [projectDescription, setProjectDescription] = useState<string>("");
     const [selectedFormStatus, setSelectedFormStatus] = useState<StatusProjects | "">("");
-    const [projectDeadline, setProjectDeadline] = useState<Date | undefined>(new Date());
+    const [projectDeadline, setProjectDeadline] = useState<Date | undefined>(undefined);
 
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
@@ -73,7 +73,7 @@ export const useProjects = () => {
 
         const timer = setTimeout(() => {
             dispatch(fetchAllProjects({ page: 1, limit: 10, search, status }));
-        })
+        }, 300)
 
         return () => clearTimeout(timer);
     }, [dispatch, search, status]);
@@ -89,15 +89,17 @@ export const useProjects = () => {
     }, [searchTeam, dispatch]);
 
     const statusOptions = [
-        { label: "Active", value: "active" },
-        { label: "On Hold", value: "on_hold" },
+        { label: "Planning", value: "planning" },
+        { label: "In Progress", value: "in_progress" },
+        { label: "Hold", value: "on_hold" },
         { label: "Completed", value: "completed" },
     ];
 
     const formatStatus = (status: string) => {
         const map: Record<string, string> = {
-            active: "Active",
-            on_hold: "On Hold",
+            planning: "Planning",
+            in_progress: "In Progress",
+            on_hold: "Hold",
             completed: "Completed",
         };
         
@@ -213,6 +215,28 @@ export const useProjects = () => {
         dispatch(clearSelectedProject());
     }, [dispatch]);
 
+    const humanizeStatus = (status: string) => {
+        return status
+        .split("_")
+        .map(word => word[0].toUpperCase() + word.slice(1))
+        .join(" ");
+    };
+  
+    const getStatusBadgeColor = (status: string): string => {
+        switch (status.toLowerCase()) {
+            case "planning":
+                return "bg-purple-100 text-purple-800 hover:bg-purple-200";
+            case "in_progress":
+                return "bg-blue-100 text-blue-800 hover:bg-blue-200";
+            case "on_hold":
+                return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
+            case "completed":
+                return "bg-green-100 text-green-800 hover:bg-green-200";
+            default:
+                return "bg-gray-100 text-gray-800";
+        }
+    };
+
     const updateProjectInitial = useCallback((project: Project): ProjectsUpdateSchema => ({
         team_id: project.team_id,
         name: project.name,
@@ -308,6 +332,8 @@ export const useProjects = () => {
         clearProjectDetail,
         isEditMode,
         setIsEditMode,
+        humanizeStatus,
+        getStatusBadgeColor,
         updateProjectForm,
         onSubmitUpdate,
         updateProjectInitial,

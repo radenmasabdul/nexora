@@ -4,10 +4,21 @@ import { z } from "zod";
 import { projectsSchema, projectUpdateSchema } from "../schemas/projects.schema";
 import { extractErrorMessage } from "@/lib/error.messages";
 
+export interface ProjectTeamMember {
+    role: string;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        avatar_url: string | null;
+    }
+}
+
 export interface ProjectTeams {
     id: string;
     name: string;
     description: string;
+    members?: ProjectTeamMember[];
 }
 
 export interface Project {
@@ -15,7 +26,7 @@ export interface Project {
     team_id: string;
     name: string;
     description: string;
-    status: "active" | "on_hold" | "completed";
+    status: "planning" | "in_progress" | "on_hold" | "completed";
     deadline: string;
     created_at: string;
     updated_at: string;

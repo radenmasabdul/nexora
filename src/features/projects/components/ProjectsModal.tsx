@@ -97,7 +97,7 @@ export default function ProjectsModal() {
                     contentClassName="z-[9999]"
                     groupClassName="bg-surface"
                     onChange={(value) => {
-                        const statusValue = value as "" | "active" | "on_hold" | "completed";
+                        const statusValue = value as "" | "planning" | "in_progress" | "on_hold" | "completed";
                         setSelectedFormStatus(statusValue);
                         if (statusValue) {
                             saveNewForm.setValue("status", statusValue);
@@ -112,6 +112,7 @@ export default function ProjectsModal() {
             <div className="space-y-3">
                 <Label htmlFor="deadline">Deadline</Label>
                 <GlobalCalendar
+                    key={openModal ? "open" : "closed"}
                     value={projectDeadline}
                     onChange={(date) => {
                         setProjectDeadline(date)
@@ -123,7 +124,7 @@ export default function ProjectsModal() {
                 {saveNewForm.formState.errors.deadline && (
                     <p className="text-red-500 text-sm">{saveNewForm.formState.errors.deadline.message}</p>
                 )}
-            </div>            
+            </div>
         </div>
     </GlobalModal>
   )

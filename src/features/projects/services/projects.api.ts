@@ -8,17 +8,17 @@ type UpdateProjectPayload = z.infer<typeof projectUpdateSchema>;
 
 export const projectsApi = {
     createProjects: async (payload: CreateProjectPayload) => {
-        const res = await axios.post("/projects/create", payload);
+        const res = await axios.post("/projects", payload);
 
-        clearCache(createCacheKey("/projects/all", { page: 1, limit: 10, search: "", status: "" }));
+        clearCache(createCacheKey("/projects", { page: 1, limit: 10, search: "", status: "" }));
 
         return res.data.data;
     },
     getAllProjects: async (params: { page: number; limit: number; search?: string; status?: string }) => {
-        const cacheKey = createCacheKey("/projects/all", params);
+        const cacheKey = createCacheKey("/projects", params);
     
         return cachedRequest(cacheKey, async () => {
-            const res = await axios.get("/projects/all", { params });
+            const res = await axios.get("/projects", { params });
             return res.data;
         });
     },
@@ -31,18 +31,18 @@ export const projectsApi = {
         });
     },
     updateProjects: async (id: string, payload: UpdateProjectPayload) => {
-        const res = await axios.put(`/projects/update/${id}`, payload);
+        const res = await axios.patch(`/projects/${id}`, payload);
 
         clearCache(createCacheKey(`/projects/${id}`));
-        clearCache(createCacheKey("/projects/all", { page: 1, limit: 10, search: "", status: "" }));
+        clearCache(createCacheKey("/projects", { page: 1, limit: 10, search: "", status: "" }));
 
         return res.data.data;
     },
     deleteProjects: async (id: string) => {
-        const res = await axios.delete(`/projects/delete/${id}`);
+        const res = await axios.delete(`/projects/${id}`);
 
         clearCache(createCacheKey(`/projects/${id}`));
-        clearCache(createCacheKey("/projects/all", { page: 1, limit: 10, search: "", status: "" }));
+        clearCache(createCacheKey("/projects", { page: 1, limit: 10, search: "", status: "" }));
         
         return res.data.data;
     }
