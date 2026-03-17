@@ -7,6 +7,7 @@ import GlobalHeader from "@/components/layout/GlobalHeader";
 import GlobalToolbar from "@/components/layout/GlobalToolbar";
 import GlobalDataTable from "@/components/layout/GlobalDataTable";
 import CardContent from "@/components/layout/CardContent";
+import TaskModal from "../components/TaskModal";
 
 export default function TaskPage() {
     const {
@@ -84,7 +85,7 @@ export default function TaskPage() {
                     />
                 </div>
 
-                {/* <TaskModal /> */}
+                <TaskModal />
             </div>
 
             <GlobalDataTable

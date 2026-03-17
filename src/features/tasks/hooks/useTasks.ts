@@ -88,14 +88,23 @@ export const useTasks = () => {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            if (searchProject.length < 3 || searchUser.length < 3) return;
-
-            dispatch(fetchAllUsers({ page: 1, limit: 20, search: searchUser}));
-            dispatch(fetchAllProjects({ page: 1, limit: 20, search: searchProject}));
+            if (searchProject.length < 3) return;
+            
+            dispatch(fetchAllProjects({ page: 1, limit: 20, search: searchProject }));
         }, 300);
 
         return () => clearTimeout(delay);
-    }, [searchProject, searchUser, dispatch]);
+    }, [searchProject, dispatch]);
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            if (searchUser.length < 3) return;
+            
+            dispatch(fetchAllUsers({ page: 1, limit: 20, search: searchUser }));
+        }, 300);
+
+        return () => clearTimeout(delay);
+    }, [searchUser, dispatch]);
 
     const statusOption = [
         { label: "To Do", value: "to_do" },
