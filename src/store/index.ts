@@ -8,6 +8,7 @@ import usersReducer from "@/features/users/store/usersSlice"
 import teamsReducer from "@/features/teams/store/teamsSlice"
 import teamMembersReducer from "@/features/teams/store/teamsMemberSlice"
 import projectsReducer from "@/features/projects/store/projectsSlice"
+import taskReducer from "@/features/tasks/store/tasksSlice"
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
         teams: teamsReducer,
         teamMembers: teamMembersReducer,
         projects: projectsReducer,
+        tasks: taskReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
