@@ -82,7 +82,7 @@ export default function TeamMemberModal({ teamId, isEditMode, className }: TeamM
             options={roleOptions}
             placeholder="Select a role"
             value={selectedRole}
-            onChange={(val) => saveNewForm.setValue("role", val as "" | "owner" | "lead" | "member", { shouldValidate: true })}
+            onChange={(val) => saveNewForm.setValue("role", val as "" | "project_owner" | "team_leader" | "developer", { shouldValidate: true })}
             contentClassName="bg-surface"
           />
           {saveNewForm.formState.errors.role && (
