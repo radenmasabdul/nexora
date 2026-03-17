@@ -6,7 +6,7 @@ import { fetchDashboard } from "../store/dashboardSlice";
 export const useDashboard = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { taskStatus, taskPriorities, taskWorkload, projectsProgress, activity, taskByTeam, loading, lastUpdated } = useSelector((state: RootState) => state.dashboard);
-
+    
     useEffect(() => {
         dispatch(fetchDashboard());
     }, [dispatch]);
@@ -29,12 +29,14 @@ export const useDashboard = () => {
         return taskStatus.map(item => ({
             ...item,
             status:
-            item.status === "done"
-            ? "Done"
-            : item.status === "todo"
+            item.status === "to_do"
             ? "To Do"
             : item.status === "in_progress"
             ? "In Progress"
+            : item.status === "review"
+            ? "Review"
+            : item.status === "done"
+            ? "Done"
             : item.status,
         }));
     }, [taskStatus]);

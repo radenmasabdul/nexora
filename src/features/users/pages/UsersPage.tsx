@@ -72,29 +72,37 @@ export default function UsersPage() {
           <CardSkeletonRoles />
         </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <CardRole
-            title="Admin"
-            value={roleCounts.admin}
+            title="Administrator"
+            value={roleCounts.administrator}
             icon={Shield}
             iconBg="bg-purple-100"
             iconColor="text-purple-600"
           />
           
           <CardRole
-            title="Manager"
-            value={roleCounts.manager}
+            title="Manager Division"
+            value={roleCounts.manager_division}
             icon={Users}
             iconBg="bg-blue-100"
             iconColor="text-blue-600"
           />
 
           <CardRole
-            title="Member"
-            value={roleCounts.member}
+            title="Project Owner"
+            value={roleCounts.project_owner}
             icon={UserCircle2}
             iconBg="bg-green-100"
             iconColor="text-green-600"
+          />
+
+          <CardRole
+            title="Staff"
+            value={roleCounts.staff}
+            icon={Users}
+            iconBg="bg-amber-100"
+            iconColor="text-amber-600"
           />
         </div>
         )

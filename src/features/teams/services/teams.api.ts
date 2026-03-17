@@ -8,17 +8,17 @@ type UpdateTeamPayload = z.infer<typeof teamsUpdateSchema>;
 
 export const teamsApi = {
     createTeam: async (payload: CreateTeamPayload) => {
-        const res = await axios.post("/teams/create", payload);
+        const res = await axios.post("/teams", payload);
 
-        clearCache(createCacheKey("/teams/all", { page: 1, limit: 10, search: "" }));
+        clearCache(createCacheKey("/teams", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
     },
     getAllTeams: async (params: { page: number; limit: number; search?: string }) => {
-        const cacheKey = createCacheKey("/teams/all", params);
+        const cacheKey = createCacheKey("/teams", params);
     
         return cachedRequest(cacheKey, async () => {
-            const res = await axios.get("/teams/all", { params });
+            const res = await axios.get("/teams", { params });
             return res.data;
         });
     },
@@ -31,18 +31,18 @@ export const teamsApi = {
         });
     },
     updateTeam: async (id: string, payload: UpdateTeamPayload) => {
-        const res = await axios.put(`/teams/update/${id}`, payload);
+        const res = await axios.patch(`/teams/${id}`, payload);
 
         clearCache(createCacheKey(`/teams/${id}`));
-        clearCache(createCacheKey("/teams/all", { page: 1, limit: 10, search: "" }));
+        clearCache(createCacheKey("/teams", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
     },
     deleteTeam: async (id: string) => {
-        const res = await axios.delete(`/teams/delete/${id}`);
+        const res = await axios.delete(`/teams/${id}`);
 
         clearCache(createCacheKey(`/teams/${id}`));
-        clearCache(createCacheKey("/teams/all", { page: 1, limit: 10, search: "" }));
+        clearCache(createCacheKey("/teams", { page: 1, limit: 10, search: "" }));
 
         return res.data.data;
     }

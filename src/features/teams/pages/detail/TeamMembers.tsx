@@ -23,7 +23,8 @@ export default function TeamMembers({ teamId, isEditMode }: TeamMembersProps) {
     setOpenConfirm,
     handleDeleteMember,
     deleteId,
-    loadingMutation
+    loadingMutation,
+    humanizeRole
   } = useTeamMembers(teamId);
 
   return (
@@ -89,7 +90,7 @@ export default function TeamMembers({ teamId, isEditMode }: TeamMembersProps) {
               
               <div className="flex items-center gap-6">
                 <div className="text-right">
-                  <Badge className="bg-info text-white">{member.role}</Badge>
+                  <Badge className="bg-info text-white">{humanizeRole(member.role)}</Badge>
                   <p className="mt-1 text-xs text-muted-foreground text-primary">Joined {formatDate(member.joined_at)}</p>
                 </div>
                 

@@ -20,7 +20,7 @@ export const usersSchema = z.object({
       }
     ),
 
-  role: z.enum(["admin", "manager", "member", ""], {
+  role: z.enum(["administrator", "manager_division", "project_owner", "staff", ""], {
     message: "Invalid role"
   }).refine((val) => val !== "", {
     message: "Please select a role"
@@ -58,7 +58,7 @@ export const usersUpdateSchema = z.object({
     ),
 
   role: z
-    .enum(["admin", "manager", "member", ""],
+    .enum(["administrator", "manager_division", "project_owner", "staff", ""],
       { message: "Invalid role" })
     .refine((val) => val !== "",
       { message: "Please select a role"}

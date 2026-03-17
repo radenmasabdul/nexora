@@ -1,5 +1,5 @@
 export interface TaskStatus {
-    status: "todo" | "in_progress" | "done";
+    status: "to_do" | "in_progress" | "review" | "done";
     count: number;
 }
 export type TaskStatusResponse = TaskStatus[];

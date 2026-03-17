@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setAlert } from "@/app/state/alertSlice";
-import { createTeamMember, deleteTeamMember, fetchTeamMembersByTeamId } from "../store/teamsMember.slice";
+import { createTeamMember, deleteTeamMember, fetchTeamMembersByTeamId } from "../store/teamsMemberSlice";
 import { fetchAllUsers } from "@/features/users/store/usersSlice";
 import { teamsMemberSchema } from "../schemas/teamsMember.schema";
 import type { AppDispatch, RootState } from "@/store";
 import type { TeamsMemberSchema } from "../schemas/teamsMember.schema";
 
-type RoleInTeam = "owner" | "lead" | "member";
+type RoleInTeam = "project_owner" | "team_leader" | "developer";
 
 interface NewTeamMember {
     team_id: string;
@@ -21,6 +21,7 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     const dispatch = useDispatch<AppDispatch>();
     const hasInitialized = useRef(false);
 
+    const [searchUser, setSearchUser] = useState<string>("");
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -40,9 +41,9 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     const { userList } = useSelector((state: RootState) => state.users);
 
     const roleOptions = [
-        { label: "Owner", value: "owner" },
-        { label: "Lead", value: "lead" },
-        { label: "Member", value: "member" },
+        { label: "Project Owner", value: "project_owner" },
+        { label: "Team Leader", value: "team_leader" },
+        { label: "Developer", value: "developer" },
     ];
 
     useEffect(() => {
@@ -63,8 +64,14 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
     }, [dispatch, teamId]);
 
     useEffect(() => {
-        dispatch(fetchAllUsers({ page: 1, limit: 100 }));
-    }, [dispatch]);
+        const delay = setTimeout(() => {
+            if (searchUser.length < 3) return;
+            
+            dispatch(fetchAllUsers({ page: 1, limit: 20, search: searchUser }));
+        }, 300);
+        
+        return () => clearTimeout(delay);
+    }, [searchUser, dispatch]);
 
     const newTeamMemberInitial: NewTeamMember = {
         team_id: teamId,
@@ -132,6 +139,13 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
         }
     };
 
+    const humanizeRole = (role: string) => {
+        return role
+        .split("_")
+        .map(word => word[0].toUpperCase() + word.slice(1))
+        .join(" ");
+    };
+
     return {
         teamMemberList,
         roleOptions,
@@ -156,5 +170,8 @@ export const useTeamMembers = (teamId: string, isEditModeProp?: boolean) => {
         openDeleteConfirm,
         handleDeleteMember,
         deleteId,
+        searchUser,
+        setSearchUser,
+        humanizeRole
     };
 }

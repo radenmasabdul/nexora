@@ -28,6 +28,7 @@ type GlobalComboBoxProps = {
   emptyMessage?: string;
   value: string;
   onChange: (value: string) => void;
+  onSearch?: (keyword: string) => void;
   className?: string;
   contentClassName?: string;
 };
@@ -39,6 +40,7 @@ export default function GlobalComboBox({
   emptyMessage = "No results found.",
   value,
   onChange,
+  onSearch,
   className,
   contentClassName,
 }: GlobalComboBoxProps) {
@@ -67,7 +69,7 @@ export default function GlobalComboBox({
         style={{ width: "var(--radix-popover-trigger-width)" }}
       >
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput placeholder={searchPlaceholder} onValueChange={(value) => onSearch?.(value)}/>
           <CommandList className="max-h-52 overflow-y-auto">
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>

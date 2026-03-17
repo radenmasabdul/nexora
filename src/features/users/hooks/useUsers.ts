@@ -18,7 +18,7 @@ import type { AppDispatch, RootState } from "@/store";
 import type { UsersSchema, UsersUpdateSchema} from "../schemas/users.schema";
 import { format } from "date-fns";
 
-type UserRole = "admin" | "manager" | "member";
+type UserRole = "administrator" | "manager_division" | "project_owner" | "staff";
 
 interface NewUsers {
   name: string;
@@ -84,9 +84,10 @@ export const useUsers = () => {
   }, [dispatch]);
 
   const roleOptions = [
-    { label: "Admin", value: "admin" },
-    { label: "Manager", value: "manager" },
-    { label: "Member", value: "member" },
+    { label: "Administrator", value: "administrator" },
+    { label: "Manager Division", value: "manager_division" },
+    { label: "Project Owner", value: "project_owner" },
+    { label: "Staff", value: "staff" },
   ];
 
   const newUserInitial: NewUsers = {
@@ -113,11 +114,18 @@ export const useUsers = () => {
   };
 
   const tableData = useMemo(() => {
+    const roleLabels: Record<string, string> = {
+      administrator: "Administrator",
+      manager_division: "Manager Division",
+      project_owner: "Project Owner",
+      staff: "Staff",
+    };
+
     return userList.map((user) => ({
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role,
+      role: roleLabels[user.role] || user.role,
       join: format(new Date(user.created_at), "dd/MM/yyyy"),
       avatar: user.avatar_url,
     }));
@@ -213,15 +221,24 @@ export const useUsers = () => {
       minute: "2-digit",
     }).format(date);
   };
+
+  const humanizeRole = (role: string) => {
+    return role
+      .split("_")
+      .map(word => word[0].toUpperCase() + word.slice(1))
+      .join(" ");
+  };
   
   const getRoleBadgeColor = (role: string): string => {
     switch (role.toLowerCase()) {
-      case "admin":
+      case "administrator":
         return "bg-red-100 text-red-800 hover:bg-red-200";
-      case "manager":
+      case "manager_division":
         return "bg-blue-100 text-blue-800 hover:bg-blue-200";
-      case "member":
+      case "project_owner":
         return "bg-green-100 text-green-800 hover:bg-green-200";
+      case "staff":
+        return "bg-amber-100 text-amber-800 hover:bg-amber-200";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -348,6 +365,7 @@ export const useUsers = () => {
     clearUserDetail,
     getInitials,
     formatDate,
+    humanizeRole,
     getRoleBadgeColor,
     isEditMode,
     setIsEditMode,

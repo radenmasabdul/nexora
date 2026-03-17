@@ -43,10 +43,10 @@ export const dashboardApi = {
     });
   },
   getTaskByTeam: async () => {
-    const cacheKey = createCacheKey("/dashboard/teams/teams");
+    const cacheKey = createCacheKey("/dashboard/teams");
     
     return cachedRequest(cacheKey, async () => {
-      const res = await axios.get("/dashboard/teams/teams");
+      const res = await axios.get("/dashboard/teams");
       return res.data.data;
     });
   },

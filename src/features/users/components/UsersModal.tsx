@@ -102,7 +102,7 @@ export default function UsersModal() {
             contentClassName="z-[9999]"
             groupClassName="bg-surface"
             onChange={(value) => {
-              const roleValue = value as "" | "admin" | "manager" | "member";
+              const roleValue = value as "" | "administrator" | "manager_division" | "project_owner" | "staff";
               setSelectedFormRole(roleValue);
               if (roleValue) {
                 saveNewForm.setValue("role", roleValue);
