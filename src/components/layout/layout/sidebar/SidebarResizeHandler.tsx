@@ -6,7 +6,7 @@ export function SidebarResizeHandler() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.matchMedia("(max-width: 1023px)").matches);
     };
 
     handleResize();

@@ -105,7 +105,7 @@ export default function AppSidebar() {
         fixed top-0 left-0 z-50 h-screen border-r bg-surface
         transition-all duration-300
         ${isMobile ? (isMobileOpen ? "translate-x-0" : "-translate-x-full") : "translate-x-0"}
-        ${isExpanded || isHovered ? "w-72" : "w-20"}
+        ${isMobile ? "w-72" : isExpanded || isHovered ? "w-72" : "w-20"}
       `}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
