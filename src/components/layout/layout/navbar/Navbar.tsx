@@ -28,7 +28,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 flex w-full bg-surface border-default z-40 lg:border-b">
-      <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
+      <div className="flex flex-col items-stretch justify-between grow lg:flex-row lg:px-6">
         <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-default sm:gap-4 lg:border-b-0 lg:px-0 lg:py-4">
           <div className="flex items-center gap-3">
             <button
@@ -50,10 +50,13 @@ export default function Navbar() {
         
         <div
           className={`${
-            isApplicationMenuOpen ? "flex" : "hidden"
-          } items-center justify-between w-full gap-4 px-5 py-4 shadow-theme-md lg:flex lg:justify-end lg:px-0 lg:shadow-none`}
+            isApplicationMenuOpen ? "flex" : "hidden"}
+            w-full flex flex-wrap justify-between items-center gap-4 px-5 py-4 border-b
+            md:flex-nowrap md:justify-between md:gap-3 md:px-4 md:py-3
+            lg:flex lg:flex-nowrap lg:items-center lg:justify-end lg:px-0 lg:py-0 lg:border-none
+          `}
         >
-          <div className="flex items-center gap-2 2xsm:gap-3">
+          <div className="flex items-center gap-4">
             <DarkModeToggle />
             <NotificationDropdown />
           </div>
