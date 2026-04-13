@@ -10,6 +10,7 @@ import TeamsDetail from "@/features/teams/pages/detail/TeamsDetail"
 import ProjectsPage from "@/pages/projects/ProjectsPage"
 import ProjectDetail from "@/features/projects/pages/detail/ProjectDetail"
 import TaskPage from "@/features/tasks/pages/TaskPage"
+import TaskDetail from "@/features/tasks/pages/detail/TaskDetail"
 
 import NotFound from "@/pages/NotFound"
 
@@ -29,6 +30,7 @@ export default function AppRouter() {
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
             <Route path="/tasks" element={<TaskPage />} />
+            <Route path="/tasks/:id" element={<TaskDetail />} />
           </Route>
         </Route>
         
